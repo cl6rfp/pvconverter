@@ -84,3 +84,15 @@ The PV source data remains unchanged.
 
 The included synthetic tests cover forward and reverse route traversal. See
 `ARCFIX_VALIDATION.md` for the reference-board validation counts and diagnostics.
+
+
+## SVG arc sweep correction (ARCFIX4)
+
+The SVG preview reflects the board's Y axis with `scale(1,-1)`. SVG's native
+sweep flag therefore has to be inverted when mapping the GenCAD arc direction:
+positive GenCAD counter-clockwise sweeps use SVG `sweep=1`, and clockwise
+sweeps use `sweep=0`. The previous mapping selected the opposite side of the
+chord and could make otherwise correctly resolved curves appear reversed.
+This is a display-only correction; source PV coordinates and arc records are
+not modified. The synthetic arc-direction test now checks the actual sweep-flag
+mapping as well as forward and reverse route traversal.
