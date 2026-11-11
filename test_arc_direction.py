@@ -21,8 +21,10 @@ assert report['arcs_direction_ambiguous_display_fallback'] == 0
 # Verify SVG sweep flags differ for opposite source directions under Y flip.
 ccw = _arc_path({'start': [1, 0], 'end': [0, 1], 'center': [0, 0], 'display_sweep_deg': 90})
 cw = _arc_path({'start': [1, 0], 'end': [0, 1], 'center': [0, 0], 'display_sweep_deg': -270})
-assert ccw.split()[-3:-1] == ['0', '0']
-assert cw.split()[-3:-1] == ['1', '1']
+# The root SVG group reflects Y, so the sweep flag must be inverted:
+# positive GenCAD CCW uses SVG sweep=1; negative/CW uses SVG sweep=0.
+assert ccw.split()[-3:-1] == ['0', '1']
+assert cw.split()[-3:-1] == ['1', '0']
 print('ARC DIRECTION UNIT TESTS PASSED')
 
 # Route order can traverse the stored arc backwards (end -> start). The
