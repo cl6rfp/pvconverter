@@ -64,6 +64,37 @@ class ReferenceValidationTests(unittest.TestCase):
         self.assertTrue(any(x['code'] == 'missing_route_net'
                             for x in report['issues']))
 
+
+    def test_non_finite_track_width_is_blocking(self):
+        data = valid_source()
+        data['tracks'][0]['width'] = float('nan')
+        report = validate_references(data)
+        self.assertTrue(any(x['code'] == 'invalid_track_width'
+                            for x in report['issues']))
+
+    def test_zero_length_route_line_is_blocking(self):
+        data = valid_source()
+        data['routes'][0]['segments'][0]['p2'] = [0.0, 0.0]
+        report = validate_references(data)
+        self.assertTrue(any(x['code'] == 'degenerate_line'
+                            for x in report['issues']))
+
+    def test_non_finite_shape_pin_coordinate_is_blocking(self):
+        data = valid_source()
+        data['shapes'][0]['pins'][0]['x'] = float('inf')
+        report = validate_references(data)
+        self.assertTrue(any(x['code'] == 'invalid_shape_pin_position'
+                            for x in report['issues']))
+
+    def test_non_positive_pad_geometry_is_blocking(self):
+        data = valid_source()
+        data['pads'][0]['geometry'] = [
+            {'type':'circle','center':[0.0,0.0],'radius':-1.0}
+        ]
+        report = validate_references(data)
+        self.assertTrue(any(x['code'] == 'invalid_circle_radius'
+                            for x in report['issues']))
+
     def test_missing_track_definition_is_warning_not_silent_zero(self):
         data = valid_source()
         data['routes'][0]['segments'][0]['track_id'] = 'NO_TRACK'
