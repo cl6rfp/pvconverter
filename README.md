@@ -11,6 +11,7 @@ Aplicación de escritorio para importar GenCAD 1.4, construir el modelo PV Core 
 - `pv_geometry.py`: lector de alto nivel, validación de relaciones y vista SVG.
 - `test_pvf.py`: integridad del contenedor y recuentos del modelo.
 - `test_geometry.py`: comprobaciones geométricas y generación de SVG.
+- `test_arc_direction.py`: pruebas sintéticas de sentido de arco, incluido el recorrido inverso.
 - `MS-7B79 r1.0.cad`: CAD de referencia usado para las pruebas.
 - `MS-7B79_test.pv`: archivo PV de prueba generado.
 
@@ -34,6 +35,7 @@ Ejecuta `build_windows.bat`. PyInstaller generará `dist\PV_Converter\PV_Convert
 ```bat
 py -3.12 test_pvf.py "MS-7B79_test.pv"
 py -3.12 test_geometry.py "MS-7B79_test.pv"
+py -3.12 test_arc_direction.py
 ```
 
 ## Uso de la aplicación
@@ -47,12 +49,13 @@ py -3.12 test_geometry.py "MS-7B79_test.pv"
 - El archivo de prueba contiene 17 bloques. Las cargas semánticas siguen serializadas como JSON UTF-8 comprimido con Zstandard dentro de un contenedor binario; todavía no es la codificación compacta definitiva.
 - Las coordenadas conservan las unidades fuente `USER 1000`; no se convierten a milímetros porque la escala física no está demostrada.
 - Los tokens `MIRRORY FLIP` se conservan sin aplicar una transformación geométrica no verificada.
-- El CAD no especifica inequívocamente el sentido de barrido de los arcos. La vista SVG usa el candidato CCW solo para dibujar una vista diagnóstica; no modifica ni resuelve los datos del `.pv`.
+- Los registros GenCAD no contienen un token explícito que indique el sentido de los arcos. El exportador SVG evalúa el sentido de recorrido de la ruta en ambas orientaciones (inicio→final y final→inicio) y utiliza la continuidad tangencial de los segmentos vecinos cuando existe evidencia suficiente. La selección es solo para visualización y no modifica los datos del archivo `.pv`. Los casos ambiguos se identifican y usan un arco menor como alternativa diagnóstica.
 - El perímetro mecánico de la placa no se declara automáticamente porque `$BOARD` contiene grupos ARTWORK sin identificar inequívocamente el contorno exterior.
 - Esta herramienta es el **PV Converter**. El **PV Viewer** para clientes será otro programa independiente y no se incluye en este paquete.
 
 ## Geometry preview update
-The SVG exporter now reconstructs component footprints by following the PV references:
+
+The SVG exporter reconstructs component footprints by following the PV references:
 component -> shape pins -> padstack -> pad geometry. It renders copper pad outlines/fills,
 drill apertures, pin numbers and component references, and includes footprint pin positions
 in the SVG bounds. The source `MIRRORY FLIP` token is used for a provisional display-side
@@ -60,10 +63,24 @@ reflection only; the original tokens remain preserved in PV. Mechanical board ou
 not fabricated from artwork: the current GenCAD input does not explicitly identify which
 artwork groups form the true board perimeter, so all source artwork remains displayed as-is.
 
-For the reference board, the updated preview was rendered successfully with 2,693 component
-footprints and existing geometry. PV integrity and geometry tests passed.
+For the reference board, the preview was rendered with 2,693 component footprints.
+PV integrity and geometry tests passed.
 
 ## Rectangular pad geometry correction
-The SVG renderer now treats GenCAD `RECTANGLE x y width height` coordinates as the rectangle origin plus dimensions, rather than treating x/y as its center. This removes the erroneous half-width/half-height offset that displaced rectangular footprint pads. Both artwork rectangles and pad rectangles use the same convention. The source coordinates in PVF are unchanged.
 
-Regression validation: `test_pvf.py` and `test_geometry.py` pass on the included reference PV. A fresh ALL-layer SVG was generated with 2,693 footprints rendered.
+The SVG renderer treats GenCAD `RECTANGLE x y width height` coordinates as the rectangle
+origin plus dimensions, rather than treating x/y as its center. This removes the erroneous
+half-width/half-height offset that displaced rectangular footprint pads. Both artwork
+rectangles and pad rectangles use the same convention. The source coordinates in PVF are
+unchanged.
+
+## Arc direction correction (ARCFIX3)
+
+The route-arc resolver evaluates both stored endpoint orientations and both possible arc
+sweeps. It uses tangent continuity with adjacent route lines to infer the display direction,
+including routes that traverse an arc from its stored end to its stored start. If continuity
+does not provide enough evidence, the preview uses a clearly reported minor-arc fallback.
+The PV source data remains unchanged.
+
+The included synthetic tests cover forward and reverse route traversal. See
+`ARCFIX_VALIDATION.md` for the reference-board validation counts and diagnostics.
