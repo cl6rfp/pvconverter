@@ -78,15 +78,15 @@ def _line_tangent_at_connection(item, seg_by, point, entering):
 
 
 def _resolve_route_arc_sweeps(routes, prims, segs, vias, tolerance=1e-4):
-    """Resolve display sweep from actual adjacent route tangents.
+    """Resolve display sweep using route continuity in either traversal direction.
 
-    Unlike the previous resolver, this accepts either endpoint orientation for
-    neighboring LINE records. GenCAD exporters do not consistently serialize
-    line endpoints in route-travel order. A candidate is selected only when
-    connected tangent evidence distinguishes it; ambiguous cases are reported.
+    GenCAD stores geometric start/end points, but route order may traverse an
+    arc from end to start. Evaluate both endpoint orientations and both arc
+    loci. The selected sweep is always expressed from the stored start to end,
+    because that is the direction consumed by the SVG path renderer.
     """
     seg_by={x['id']:x for x in segs}; via_by={x['id']:x for x in vias}
-    chosen={}; resolved=0; unresolved=0; no_neighbors=0
+    chosen={}; resolved=0; unresolved=0; no_neighbors=0; reverse_traversals=0
     for route in routes:
         stream=prims[route['primitive_start']-1:route['primitive_start']-1+route['primitive_count']]
         for i,item in enumerate(stream):
@@ -96,35 +96,45 @@ def _resolve_route_arc_sweeps(routes, prims, segs, vias, tolerance=1e-4):
             a1=math.atan2(arc['start'][1]-arc['center'][1],arc['start'][0]-arc['center'][0])
             a2=math.atan2(arc['end'][1]-arc['center'][1],arc['end'][0]-arc['center'][0])
             ccw=math.degrees((a2-a1)%(2*math.pi))
-            # Positive is CCW in source coordinates; negative is the other path.
             candidates=[ccw, ccw-360.0 if ccw else -360.0]
             prev=stream[i-1] if i>0 else None
             nxt=stream[i+1] if i+1<len(stream) else None
             scores=[]
+            # forward=True means route travels stored start -> end.
             for sweep in candidates:
-                score=0.0; evidence=0
                 ccw_dir=sweep>=0
-                ts=_arc_tangent(arc,True,ccw_dir); te=_arc_tangent(arc,False,ccw_dir)
-                incoming=_line_tangent_at_connection(prev,seg_by,tuple(arc['start']),True)
-                outgoing=_line_tangent_at_connection(nxt,seg_by,tuple(arc['end']),False)
-                if incoming and ts:
-                    score += sum(x*y for x,y in zip(incoming,ts)); evidence += 1
-                if outgoing and te:
-                    score += sum(x*y for x,y in zip(te,outgoing)); evidence += 1
-                scores.append((score,evidence,sweep))
+                for forward in (True,False):
+                    entry=arc['start'] if forward else arc['end']
+                    exit_point=arc['end'] if forward else arc['start']
+                    incoming=_line_tangent_at_connection(prev,seg_by,tuple(entry),True)
+                    outgoing=_line_tangent_at_connection(nxt,seg_by,tuple(exit_point),False)
+                    entry_tangent=_arc_tangent(arc,forward,ccw_dir)
+                    exit_tangent=_arc_tangent(arc,not forward,ccw_dir)
+                    # Reversing route traversal reverses both geometric tangents.
+                    if not forward:
+                        entry_tangent=tuple(-v for v in entry_tangent)
+                        exit_tangent=tuple(-v for v in exit_tangent)
+                    score=0.0; evidence=0
+                    if incoming and entry_tangent:
+                        score += sum(x*y for x,y in zip(incoming,entry_tangent)); evidence += 1
+                    if outgoing and exit_tangent:
+                        score += sum(x*y for x,y in zip(exit_tangent,outgoing)); evidence += 1
+                    scores.append((score,evidence,sweep,forward))
             scores.sort(key=lambda z:z[0],reverse=True)
             if scores[0][1] and scores[0][0]-scores[1][0] > 0.15:
                 chosen[arc['id']]=scores[0][2]; resolved+=1
+                if not scores[0][3]: reverse_traversals+=1
             else:
-                # Do not silently claim a direction. Keep a neutral minor sweep
-                # for display and explicitly count this record as unresolved.
+                # No source direction is fabricated when neighboring geometry
+                # cannot distinguish the candidates.
                 minor=ccw if ccw<=180.0 else ccw-360.0
                 chosen[arc['id']]=minor if abs(minor)>1e-7 else 180.0
                 unresolved+=1
-                if not scores[0][1]: no_neighbors+=1
+                if not any(s[1] for s in scores): no_neighbors+=1
     return chosen, {'arcs_direction_inferred_from_continuity':resolved,
                     'arcs_direction_ambiguous_display_fallback':unresolved,
-                    'arcs_without_connected_line_tangent':no_neighbors}
+                    'arcs_without_connected_line_tangent':no_neighbors,
+                    'arcs_route_traversed_end_to_start':reverse_traversals}
 
 
 def _geom_svg(g, color, width=1.0):
