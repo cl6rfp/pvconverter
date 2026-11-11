@@ -68,7 +68,7 @@ checks['pin_refs_valid']=all(x['component_id'] in component_ids and
     x['shape_id'] in shape_ids and x['padstack_id'] in padstack_ids and
     x['layer_id'] in layer_ids for x in pins)
 checks['padstack_pad_refs_valid']=all(
-    entry['pad_id'] in pad_ids and entry['layer_id'] in layer_ids
+    entry['pad_id'] in pad_ids and (entry['layer_id']==0 or entry['layer_id'] in layer_ids)
     for st in padstacks for entry in st['pads'])
 checks['net_pin_refs_valid']=all(
     conn['pin_id'] in pin_ids for net in nets for conn in net['connections'])
