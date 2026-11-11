@@ -239,6 +239,7 @@ def build_model(data, raw):
     for l in data['layers']: add_layer(l['name'],l['type'],l['name'],None)
     add_layer('ALL','all_layers','ALL',None)
     for c in comps: add_layer(c.get('layer'))
+    for artwork in data['board_artworks']: add_layer(artwork.get('layer'))
     for r in routes:
         for seg in r['segments']: add_layer(seg.get('layer'))
     layer_ids={x['name']:i+1 for i,x in enumerate(layer_specs)}
@@ -331,7 +332,7 @@ def build_model(data, raw):
             else:
                 normalized_layer=source_layer
             stack_pads.append(dict(entry,pad_id=pad_ids[entry['pad']],
-                layer_id=layer_ids[normalized_layer],normalized_layer=normalized_layer,
+                layer_id=layer_ids[normalized_layer] if normalized_layer else 0,normalized_layer=normalized_layer,
                 source_layer=source_layer))
         stack_records.append({'id':stack_ids[st['name']],'name':st['name'],'drill':st['drill'],
             'pads':stack_pads,'attributes':st['attributes'],
