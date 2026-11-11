@@ -30,9 +30,11 @@ def _arc_path(g):
     r=(r1+r2)/2
     sweep=float(g.get('display_sweep_deg',g.get('arc_sweep_ccw_deg',0.0)))
     large=1 if abs(sweep)>180.0+1e-7 else 0
-    # The parent SVG group flips Y. SVG sweep=0 therefore maps to CCW
-    # in the original GenCAD coordinate system; sweep=1 maps to CW.
-    svg_sweep=0 if sweep >= 0 else 1
+    # The parent SVG group flips Y. SVG's sweep=1 is clockwise in its
+    # native y-down coordinate system; the reflection makes it CCW in the
+    # original GenCAD y-up coordinate system. Therefore the mapping is
+    # intentionally the opposite of the untransformed SVG mapping.
+    svg_sweep=1 if sweep >= 0 else 0
     return f'M {sx:.6f},{sy:.6f} A {r:.6f},{r:.6f} 0 {large} {svg_sweep} {ex:.6f},{ey:.6f}'
 
 
