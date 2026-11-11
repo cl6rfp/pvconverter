@@ -24,3 +24,23 @@ cw = _arc_path({'start': [1, 0], 'end': [0, 1], 'center': [0, 0], 'display_sweep
 assert ccw.split()[-3:-1] == ['0', '0']
 assert cw.split()[-3:-1] == ['1', '1']
 print('ARC DIRECTION UNIT TESTS PASSED')
+
+# Route order can traverse the stored arc backwards (end -> start). The
+# neighboring line records are deliberately stored with reversed endpoints.
+segs_reverse = [
+    {'id': 11, 'type': 'line', 'p1': [0, 1], 'p2': [-1, 1]},
+    {'id': 12, 'type': 'arc', 'start': [1, 0], 'end': [0, 1], 'center': [0, 0]},
+    {'id': 13, 'type': 'line', 'p1': [1, -1], 'p2': [1, 0]},
+]
+prims_reverse = [
+    {'route_id': 2, 'order': 0, 'kind': 'segment', 'ref_id': 11},
+    {'route_id': 2, 'order': 1, 'kind': 'segment', 'ref_id': 12},
+    {'route_id': 2, 'order': 2, 'kind': 'segment', 'ref_id': 13},
+]
+routes_reverse = [{'id': 2, 'primitive_start': 1, 'primitive_count': 3}]
+chosen_reverse, report_reverse = _resolve_route_arc_sweeps(
+    routes_reverse, prims_reverse, segs_reverse, [])
+assert chosen_reverse[12] == 90.0, chosen_reverse
+assert report_reverse['arcs_direction_inferred_from_continuity'] == 1
+assert report_reverse['arcs_route_traversed_end_to_start'] == 1
+assert report_reverse['arcs_direction_ambiguous_display_fallback'] == 0
