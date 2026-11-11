@@ -15,6 +15,32 @@ LAYER_COLORS = {
 }
 
 
+
+def _arc_extrema_points(g, sweep_deg=None):
+    """Return exact axis-aligned extrema points for a circular SVG arc."""
+    sx, sy = map(float, g['start'])
+    ex, ey = map(float, g['end'])
+    cx, cy = map(float, g['center'])
+    r1 = math.hypot(sx-cx, sy-cy)
+    r2 = math.hypot(ex-cx, ey-cy)
+    radius = (r1+r2)/2.0
+    if radius <= 1e-12:
+        return [(sx, sy), (ex, ey)]
+    sweep = float(sweep_deg if sweep_deg is not None else g.get('arc_sweep_ccw_deg', 0.0))
+    start = math.atan2(sy-cy, sx-cx)
+    end = math.atan2(ey-cy, ex-cx)
+    if abs(sweep) < 1e-9:
+        sweep = math.degrees((end-start) % (2*math.pi))
+    points = [(sx, sy), (ex, ey)]
+    direction = 1.0 if sweep >= 0 else -1.0
+    span = abs(math.radians(sweep))
+    for angle in (0.0, math.pi/2, math.pi, 3*math.pi/2):
+        delta = ((angle-start) % (2*math.pi)) if direction > 0 else ((start-angle) % (2*math.pi))
+        if delta <= span + 1e-10:
+            points.append((cx + radius*math.cos(angle), cy + radius*math.sin(angle)))
+    return points
+
+
 def _xy_bounds(points):
     pts=[(float(x),float(y)) for x,y in points if x is not None and y is not None]
     if not pts: return (-1.0,-1.0,1.0,1.0)
@@ -246,14 +272,26 @@ def export_svg(pv_path, svg_path, layer='ALL', show_components=False):
     points=[]
     def addp(p):
         if p and len(p)>=2 and p[0] is not None and p[1] is not None: points.append(p)
-    # Bounds include routed geometry, board artwork, vias/holes and transformed footprint pins.
-    for s in b.get('SEGS',[]):
-        if s.get('type')=='line': addp(s.get('p1')); addp(s.get('p2'))
-        elif s.get('type')=='arc': addp(s.get('start')); addp(s.get('end')); addp(s.get('center'))
-    for a in b.get('ARTW',[]):
-        for g in a.get('geometry',[]):
-            if g.get('type')=='line': addp(g.get('p1')); addp(g.get('p2'))
-            elif g.get('type')=='arc': addp(g.get('start')); addp(g.get('end')); addp(g.get('center'))
+    # Bounds use visible geometry, not arc centers (which are not rendered points).
+    for seg in display_segs:
+        if seg.get('type') == 'line':
+            addp(seg.get('p1')); addp(seg.get('p2'))
+        elif seg.get('type') == 'arc':
+            for point in _arc_extrema_points(seg, seg.get('display_sweep_deg')):
+                addp(point)
+    for artwork in b.get('ARTW',[]):
+        for geom in artwork.get('geometry',[]):
+            if geom.get('type') == 'line':
+                addp(geom.get('p1')); addp(geom.get('p2'))
+            elif geom.get('type') == 'arc':
+                for point in _arc_extrema_points(geom):
+                    addp(point)
+            elif geom.get('type') == 'circle':
+                cx, cy = geom['center']; radius = float(geom['radius'])
+                addp((cx-radius, cy-radius)); addp((cx+radius, cy+radius))
+            elif geom.get('type') == 'rectangle':
+                x, y, w, h = map(float, (geom['x'], geom['y'], geom['width'], geom['height']))
+                addp((x,y)); addp((x+w,y+h))
     for v in b.get('VIAS',[]): addp((v.get('x'),v.get('y')))
     for h in b.get('HOLE',[]): addp((h.get('x'),h.get('y')))
     # Resolve model lookup tables once; the PV references are authoritative.
@@ -280,12 +318,9 @@ def export_svg(pv_path, svg_path, layer='ALL', show_components=False):
            '<rect x="-1000000" y="-1000000" width="2000000" height="2000000" fill="#10151d"/>',
            '<g transform="scale(1,-1)" fill="none" stroke-linecap="round" stroke-linejoin="round">']
     def allowed(src): return layer=='ALL' or src==layer
-    # The source has no explicit mechanical board-edge primitive. Draw a dashed
-    # convex envelope of the available geometry, explicitly styled as estimated.
-    hull=_convex_hull(points)
-    if len(hull)>=3:
-        d='M '+' L '.join(f'{x:.4f},{y:.4f}' for x,y in hull)+' Z'
-        parts.append(f'<path d="{d}" fill="none" stroke="#f3f4f6" stroke-width="5" stroke-dasharray="28 18" opacity="0.78"/>')
+    # No board-edge primitive is present in this source. Do not invent an
+    # outline from routed copper or component positions: that hull is not a
+    # physical board boundary and can visually mislead repair work.
     # Existing board artwork (kept distinct from an asserted board outline).
     for a in b.get('ARTW',[]):
         if not allowed(a.get('source_layer')): continue
@@ -420,7 +455,7 @@ def export_svg(pv_path, svg_path, layer='ALL', show_components=False):
     Path(svg_path).write_text('\n'.join(parts),encoding='utf-8')
     return {'svg_path':str(svg_path),'bounds_source_units':[xmin,ymin,xmax,ymax],'layer':layer,
             'components_shown':show_components,'footprints_rendered':sum(1 for c in b.get('COMP',[]) if c.get('shape_id') in shapes),
-            **arc_direction_report, 'outline_status':'estimated convex envelope only; source contains no explicit mechanical board edge', 'component_silhouettes':'estimated from transformed pad extents; dashed to distinguish from true package outlines'}
+            **arc_direction_report, 'outline_status':'not rendered; source contains no explicit mechanical board edge', 'component_silhouettes':'estimated from transformed pad extents; dashed to distinguish from true package outlines'}
 
 
 def main():
