@@ -33,6 +33,12 @@ def validate_references(data):
     def issue(severity, code, entity, key, value, message):
         issues.append({'severity':severity,'code':code,'entity':entity,
                        'key':key,'value':value,'message':message})
+    def finite_number(value):
+        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+    def valid_pair(value):
+        return isinstance(value, (list, tuple)) and len(value) == 2 and all(finite_number(v) for v in value)
+
     def index(items, key, label):
         result = {}
         for pos, item in enumerate(items):
@@ -58,6 +64,12 @@ def validate_references(data):
     # for source records that intentionally describe an unplaced/unfootprinted part.
     for c in data['components']:
         ref, shape = c.get('reference'), c.get('shape')
+        if 'position' in c and not valid_pair(c.get('position')):
+            issue('error','invalid_component_position','component',ref,c.get('position'),
+                  'Component placement must contain two finite numeric coordinates')
+        if c.get('rotation') is not None and not finite_number(c.get('rotation')):
+            issue('error','invalid_component_rotation','component',ref,c.get('rotation'),
+                  'Component rotation must be a finite number')
         if not shape:
             issue('warning','component_without_shape','component',ref,None,
                   'Component has no SHAPE declaration; no pins can be generated')
@@ -73,6 +85,14 @@ def validate_references(data):
                 issue('error','duplicate_shape_pin','shape',sh.get('name'),number,
                       'Pin number is duplicated within this shape; pin lookup would be ambiguous')
             pin_numbers.add(number)
+            if not finite_number(pin.get('x')) or not finite_number(pin.get('y')):
+                issue('error','invalid_shape_pin_position','shape_pin',
+                      f"{sh.get('name')}:{number}",[pin.get('x'),pin.get('y')],
+                      'Shape pin position must contain finite numeric X/Y coordinates')
+            if pin.get('rotation') is not None and not finite_number(pin.get('rotation')):
+                issue('error','invalid_shape_pin_rotation','shape_pin',
+                      f"{sh.get('name')}:{number}",pin.get('rotation'),
+                      'Shape pin rotation must be a finite number')
             stack = pin.get('padstack')
             if not stack or stack not in stacks:
                 issue('error','missing_pin_padstack','shape_pin',
@@ -80,7 +100,15 @@ def validate_references(data):
                       'Pin references a padstack that does not exist')
 
     for st in data['padstacks']:
+        drill = st.get('drill')
+        if drill is not None and (not finite_number(drill) or drill < 0):
+            issue('error','invalid_padstack_drill','padstack',st.get('name'),drill,
+                  'Padstack drill must be a finite non-negative number')
         for entry in st.get('pads', []):
+            rotation = entry.get('rotation')
+            if rotation is not None and not finite_number(rotation):
+                issue('error','invalid_padstack_pad_rotation','padstack',
+                      st.get('name'),rotation,'Pad rotation must be a finite number')
             pad = entry.get('pad')
             if not pad or pad not in pads:
                 issue('error','missing_pad_geometry','padstack',
@@ -102,6 +130,12 @@ def validate_references(data):
                       f'{cref}:{pnum}',
                       'Node pin cannot be resolved through the component shape')
 
+    for track in data['tracks']:
+        width = track.get('width')
+        if width is not None and (not finite_number(width) or width <= 0):
+            issue('error','invalid_track_width','track',track.get('id'),width,
+                  'Track width must be a finite positive number')
+
     for route in data['routes']:
         net = route.get('net')
         if not net or net not in signals:
@@ -119,16 +153,20 @@ def validate_references(data):
                       'Segment has no explicit layer context')
             if seg.get('type') == 'line':
                 pts = (seg.get('p1'), seg.get('p2'))
-                if any(not pt or len(pt) != 2 or any(v is None for v in pt) for pt in pts):
+                if any(not valid_pair(pt) for pt in pts):
                     issue('error','invalid_line_geometry','route_segment',
                           route.get('net'),seg.get('source_order'),
-                          'Line is missing valid numeric endpoints')
+                          'Line is missing valid finite numeric endpoints')
+                elif math.dist(*pts) <= 1e-12:
+                    issue('error','degenerate_line','route_segment',
+                          route.get('net'),seg.get('source_order'),
+                          'Line endpoints are coincident; segment has zero length')
             elif seg.get('type') == 'arc':
                 pts = (seg.get('start'), seg.get('end'), seg.get('center'))
-                if any(not pt or len(pt) != 2 or any(v is None for v in pt) for pt in pts):
+                if any(not valid_pair(pt) for pt in pts):
                     issue('error','invalid_arc_geometry','route_segment',
                           route.get('net'),seg.get('source_order'),
-                          'Arc is missing valid numeric start/end/center')
+                          'Arc is missing valid finite numeric start/end/center')
                 else:
                     r1=math.dist(seg['start'],seg['center'])
                     r2=math.dist(seg['end'],seg['center'])
@@ -149,9 +187,9 @@ def validate_references(data):
             if stack and stack not in stacks:
                 issue('error','missing_via_padstack','via',route.get('net'),stack,
                       'Via references a padstack that does not exist')
-            if via.get('x') is None or via.get('y') is None:
+            if not finite_number(via.get('x')) or not finite_number(via.get('y')):
                 issue('error','invalid_via_position','via',route.get('net'),via.get('raw'),
-                      'Via is missing numeric coordinates')
+                      'Via is missing finite numeric coordinates')
 
     # Source layer declarations must be unique; inferred route/component layers
     # are added later and remain explicitly marked as source-derived.
@@ -169,16 +207,29 @@ def validate_references(data):
                             ('x','y','width','height') if t=='rectangle' else ())
                 for field in required:
                     value=g.get(field)
-                    if isinstance(value,list):
-                        valid=len(value)==2 and all(v is not None for v in value)
+                    if isinstance(value,(list,tuple)):
+                        valid=valid_pair(value)
                     else:
-                        valid=value is not None
+                        valid=finite_number(value)
                     if not valid:
                         issue('error','invalid_geometry_record',group_name,
                               group.get('name'),f'{gi}:{field}',
                               f'Known geometry primitive is missing valid {field}')
-                if t=='arc' and all(g.get(k) and all(v is not None for v in g[k])
-                                    for k in ('start','end','center')):
+                if t=='line' and valid_pair(g.get('p1')) and valid_pair(g.get('p2')):
+                    if math.dist(g['p1'],g['p2']) <= 1e-12:
+                        issue('error','degenerate_line',group_name,group.get('name'),gi,
+                              'Line endpoints are coincident; segment has zero length')
+                if t=='circle' and finite_number(g.get('radius')) and g['radius'] <= 0:
+                    issue('error','invalid_circle_radius',group_name,group.get('name'),gi,
+                          'Circle radius must be a finite positive number')
+                if t=='rectangle':
+                    if finite_number(g.get('width')) and g['width'] <= 0:
+                        issue('error','invalid_rectangle_width',group_name,group.get('name'),gi,
+                              'Rectangle width must be positive')
+                    if finite_number(g.get('height')) and g['height'] <= 0:
+                        issue('error','invalid_rectangle_height',group_name,group.get('name'),gi,
+                              'Rectangle height must be positive')
+                if t=='arc' and all(valid_pair(g.get(k)) for k in ('start','end','center')):
                     r1=math.dist(g['start'],g['center'])
                     r2=math.dist(g['end'],g['center'])
                     if r1 == 0 or r2 == 0:
@@ -187,6 +238,17 @@ def validate_references(data):
                     elif abs(r1-r2) > max(1e-6,max(r1,r2)*1e-4):
                         issue('warning','arc_radius_mismatch',group_name,group.get('name'),gi,
                               'Arc endpoint radii differ; source geometry is retained')
+
+    for hole in data.get('mechanical_holes', []):
+        if not finite_number(hole.get('x')) or not finite_number(hole.get('y')):
+            issue('error','invalid_mechanical_hole_position','mechanical_hole',
+                  hole.get('raw'),[hole.get('x'),hole.get('y')],
+                  'Mechanical hole must have finite numeric X/Y coordinates')
+        diameter = hole.get('diameter')
+        if not finite_number(diameter) or diameter <= 0:
+            issue('error','invalid_mechanical_hole_diameter','mechanical_hole',
+                  hole.get('raw'),diameter,
+                  'Mechanical hole diameter must be a finite positive number')
 
     errors = sum(x['severity']=='error' for x in issues)
     warnings = sum(x['severity']=='warning' for x in issues)
