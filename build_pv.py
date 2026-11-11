@@ -222,6 +222,20 @@ def build_model(data, raw):
     add_layer('INNER_1','copper','INNER',2)
     add_layer('INNER_2','copper','INNER',3)
     add_layer('BOTTOM','copper','BOTTOM',4)
+    # Include every layer referenced by shape pins and padstack entries before
+    # assigning IDs. Repeated INNER entries are normalized per padstack.
+    for sh in shapes:
+        for pin in sh.get('pins',[]):
+            add_layer(pin.get('layer'))
+    for st in stacks:
+        inner_count=0
+        for entry in st.get('pads',[]):
+            source_layer=entry.get('layer')
+            if source_layer=='INNER':
+                inner_count+=1
+                add_layer(f'INNER_{inner_count}','copper','INNER',None)
+            elif source_layer:
+                add_layer(source_layer,'unspecified',source_layer,None)
     for l in data['layers']: add_layer(l['name'],l['type'],l['name'],None)
     add_layer('ALL','all_layers','ALL',None)
     for c in comps: add_layer(c.get('layer'))
