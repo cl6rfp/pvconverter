@@ -56,10 +56,24 @@ def write_pvf(path, blocks: list[dict], version=VERSION):
     header0=HEADER.pack(MAGIC,version[0],version[1],HEADER.size,0,file_size,dir_offset,len(prepared),DIRENT.size,0,b'\0'*20)
     hcrc=zlib.crc32(header0)&0xffffffff
     header=HEADER.pack(MAGIC,version[0],version[1],HEADER.size,0,file_size,dir_offset,len(prepared),DIRENT.size,hcrc,b'\0'*20)
-    with open(path,'wb') as f:
-        f.write(header)
-        for d in directory: f.write(d)
-        for item in prepared: f.write(item[2])
+    # Write beside the destination and atomically replace it only after the
+    # complete container has reached disk. A failed write leaves the old file intact.
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    fd, temp_name = tempfile.mkstemp(prefix=destination.name + '.', suffix='.tmp',
+                                     dir=str(destination.parent))
+    try:
+        with os.fdopen(fd, 'wb') as f:
+            f.write(header)
+            for d in directory: f.write(d)
+            for item in prepared: f.write(item[2])
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp_name, destination)
+    except Exception:
+        try: os.unlink(temp_name)
+        except OSError: pass
+        raise
     return {'file_size':file_size,'block_count':len(prepared),'header_crc32':hcrc}
 
 def read_pvf(path, verify_source=True):
