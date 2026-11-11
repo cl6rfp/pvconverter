@@ -46,3 +46,24 @@ assert chosen_reverse[12] == 90.0, chosen_reverse
 assert report_reverse['arcs_direction_inferred_from_continuity'] == 1
 assert report_reverse['arcs_route_traversed_end_to_start'] == 1
 assert report_reverse['arcs_direction_ambiguous_display_fallback'] == 0
+
+
+# Arc bounds must include the true extrema, not the circle center.
+from pv_geometry import _arc_extrema_points
+
+quarter = {'start': [1, 0], 'end': [0, 1], 'center': [0, 0]}
+pts = _arc_extrema_points(quarter, 90)
+assert any(abs(x-1.0) < 1e-9 and abs(y) < 1e-9 for x, y in pts)
+assert any(abs(x) < 1e-9 and abs(y-1.0) < 1e-9 for x, y in pts)
+assert len(pts) == 2, pts
+
+three_quarter = _arc_extrema_points(
+    {'start': [1, 0], 'end': [0, -1], 'center': [0, 0]}, 270)
+assert any(abs(x+1.0) < 1e-9 and abs(y) < 1e-9 for x, y in three_quarter)
+assert any(abs(x) < 1e-9 and abs(y-1.0) < 1e-9 for x, y in three_quarter)
+assert len(three_quarter) == 4, three_quarter
+
+clockwise = _arc_extrema_points(
+    {'start': [1, 0], 'end': [0, -1], 'center': [0, 0]}, -90)
+assert len(clockwise) == 2, clockwise
+print('ARC EXTREMA TESTS PASSED')
