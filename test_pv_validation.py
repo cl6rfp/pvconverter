@@ -13,7 +13,7 @@ def valid_source():
     return {
         'components': [{'reference':'U1','shape':'PKG1'}],
         'shapes': [{'name':'PKG1','pins':[
-            {'number':'1','padstack':'PST1'}
+            {'number':'1','padstack':'PST1','x':0.0,'y':0.0,'rotation':0.0}
         ]}],
         'pads': [{'name':'PAD1'}],
         'padstacks': [{'name':'PST1','pads':[{'pad':'PAD1','layer':'TOP'}]}],
