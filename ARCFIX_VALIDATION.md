@@ -32,3 +32,16 @@ Important: the GenCAD records parsed by this version contain arc start, end and 
 but no explicit direction token. Where adjacent route geometry cannot distinguish the
 candidate sweeps, the SVG uses a conservative minor-arc display fallback. These cases
 remain identified in the diagnostic report rather than being presented as source-confirmed.
+
+
+## ARCFIX4 – SVG sweep flag under Y reflection
+
+A rendering-direction defect was found after ARCFIX3: the SVG root group uses
+`scale(1,-1)`, so the SVG sweep flag must be inverted relative to the GenCAD
+Y-up sweep. The renderer now maps positive/CCW sweeps to SVG flag 1 and negative/CW
+sweeps to flag 0. This corrects which side of the chord the arc is drawn on without
+changing the PV source geometry. The synthetic test asserts both mappings.
+
+The reference-board fixture-level export should be regenerated with the commands
+in the README to inspect the corrected visual result; the ARCFIX3 counts above are
+historical and are not presented as a new ARCFIX4 fixture run.
