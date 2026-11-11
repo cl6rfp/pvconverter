@@ -1,0 +1,69 @@
+# PV Converter – PVF 1.0 (prototipo funcional)
+
+Aplicación de escritorio para importar GenCAD 1.4, construir el modelo PV Core y generar archivos `.pv`. Incluye lector PVF, validación de integridad y exportación de vista geométrica SVG.
+
+## Contenido
+
+- `pv_converter_gui.py`: interfaz de escritorio Windows (Tkinter, incluido con Python).
+- `gencad_parser.py`: importador GenCAD 1.4.
+- `build_pv.py`: normalización del modelo y creación de bloques PVF.
+- `pvf.py`: contenedor binario, directorio, Zstandard y CRC32.
+- `pv_geometry.py`: lector de alto nivel, validación de relaciones y vista SVG.
+- `test_pvf.py`: integridad del contenedor y recuentos del modelo.
+- `test_geometry.py`: comprobaciones geométricas y generación de SVG.
+- `MS-7B79 r1.0.cad`: CAD de referencia usado para las pruebas.
+- `MS-7B79_test.pv`: archivo PV de prueba generado.
+
+## Requisitos para ejecutar desde Python
+
+Windows 10/11, Python 3.12 de 64 bits y Zstandard:
+
+```bat
+py -3.12 -m pip install -r requirements.txt
+py -3.12 pv_converter_gui.py
+```
+
+La aplicación también puede iniciarse con `C:\PV_Converter\.venv\Scripts\python.exe pv_converter_gui.py` si ese entorno tiene instalado `zstandard`.
+
+## Crear el ejecutable Windows
+
+Ejecuta `build_windows.bat`. PyInstaller generará `dist\PV_Converter\PV_Converter.exe`. Se distribuye la carpeta completa `PV_Converter`, no solo el EXE, porque contiene las bibliotecas necesarias.
+
+## Pruebas sobre el PV incluido
+
+```bat
+py -3.12 test_pvf.py "MS-7B79_test.pv"
+py -3.12 test_geometry.py "MS-7B79_test.pv"
+```
+
+## Uso de la aplicación
+
+1. **Importar CAD y convertir a PV**: selecciona el CAD y dónde guardar el `.pv`.
+2. **Abrir archivo PV y validar**: comprueba la lectura, los bloques y las relaciones de rutas.
+3. **Exportar vista geométrica SVG**: permite visualizar todas las capas o una capa concreta; el SVG se abre en el navegador.
+
+## Estado y límites conocidos
+
+- El archivo de prueba contiene 17 bloques. Las cargas semánticas siguen serializadas como JSON UTF-8 comprimido con Zstandard dentro de un contenedor binario; todavía no es la codificación compacta definitiva.
+- Las coordenadas conservan las unidades fuente `USER 1000`; no se convierten a milímetros porque la escala física no está demostrada.
+- Los tokens `MIRRORY FLIP` se conservan sin aplicar una transformación geométrica no verificada.
+- El CAD no especifica inequívocamente el sentido de barrido de los arcos. La vista SVG usa el candidato CCW solo para dibujar una vista diagnóstica; no modifica ni resuelve los datos del `.pv`.
+- El perímetro mecánico de la placa no se declara automáticamente porque `$BOARD` contiene grupos ARTWORK sin identificar inequívocamente el contorno exterior.
+- Esta herramienta es el **PV Converter**. El **PV Viewer** para clientes será otro programa independiente y no se incluye en este paquete.
+
+## Geometry preview update
+The SVG exporter now reconstructs component footprints by following the PV references:
+component -> shape pins -> padstack -> pad geometry. It renders copper pad outlines/fills,
+drill apertures, pin numbers and component references, and includes footprint pin positions
+in the SVG bounds. The source `MIRRORY FLIP` token is used for a provisional display-side
+reflection only; the original tokens remain preserved in PV. Mechanical board outline is
+not fabricated from artwork: the current GenCAD input does not explicitly identify which
+artwork groups form the true board perimeter, so all source artwork remains displayed as-is.
+
+For the reference board, the updated preview was rendered successfully with 2,693 component
+footprints and existing geometry. PV integrity and geometry tests passed.
+
+## Rectangular pad geometry correction
+The SVG renderer now treats GenCAD `RECTANGLE x y width height` coordinates as the rectangle origin plus dimensions, rather than treating x/y as its center. This removes the erroneous half-width/half-height offset that displaced rectangular footprint pads. Both artwork rectangles and pad rectangles use the same convention. The source coordinates in PVF are unchanged.
+
+Regression validation: `test_pvf.py` and `test_geometry.py` pass on the included reference PV. A fresh ALL-layer SVG was generated with 2,693 footprints rendered.
