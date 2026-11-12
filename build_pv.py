@@ -51,7 +51,7 @@ def audit_conversion_integrity(data, tolerance=1e-4, max_examples=20):
     def finite(value):
         try:
             return value is not None and math.isfinite(float(value))
-        except (TypeError, ValueError):
+        except (TypeError, ValueError, OverflowError):
             return False
 
     def primitive_geometry(route, primitive):
@@ -74,19 +74,105 @@ def audit_conversion_integrity(data, tolerance=1e-4, max_examples=20):
                 return point, point, via
         return None
 
-    for entity, records, fields in (
-            ('track', data['tracks'], ('width',)),
-            ('shape_pin', (pin for shape in data['shapes'] for pin in shape.get('pins', [])),
-             ('x', 'y')),
-            ('mechanical_hole', data['mechanical_holes'], ('x', 'y', 'diameter'))):
-        for record_index, record in enumerate(records):
-            for field in fields:
-                value = record.get(field)
-                if not finite(value) or (
-                        field in ('width', 'diameter') and float(value) <= 0):
-                    report('blocking_errors', 'invalid_numeric_value', entity,
-                           record.get('id', record.get('name', record_index)), field,
-                           f'{entity} {field} must be a finite positive number')
+    def check_numeric(entity, key, field, value, positive=False,
+                      nonnegative=False, optional=False):
+        if optional and value is None:
+            return True
+        valid = finite(value)
+        if valid:
+            number = float(value)
+            if positive and number <= 0:
+                valid = False
+            if nonnegative and number < 0:
+                valid = False
+        if not valid:
+            requirement = ('finite positive' if positive else
+                           'finite non-negative' if nonnegative else 'finite')
+            report('blocking_errors', 'invalid_numeric_value', entity,
+                   key, field, f'{entity} {field} must be a {requirement} number')
+        return valid
+
+    def check_point(entity, key, field, point, optional=False):
+        if optional and point is None:
+            return True
+        if not isinstance(point, (list, tuple)) or len(point) != 2:
+            report('blocking_errors', 'invalid_numeric_value', entity,
+                   key, field, f'{entity} {field} must contain exactly two finite coordinates')
+            return False
+        results = [
+            check_numeric(entity, key, f'{field}[{axis}]', value)
+            for axis, value in zip(('x', 'y'), point)
+        ]
+        return all(results)
+
+    for record_index, track in enumerate(data['tracks']):
+        check_numeric('track', track.get('id', record_index), 'width',
+                      track.get('width'), positive=True)
+
+    for shape_index, shape in enumerate(data['shapes']):
+        for pin_index, pin in enumerate(shape.get('pins', [])):
+            key = f"{shape.get('name', shape_index)}:{pin.get('number', pin_index)}"
+            check_numeric('shape_pin', key, 'x', pin.get('x'))
+            check_numeric('shape_pin', key, 'y', pin.get('y'))
+            check_numeric('shape_pin', key, 'rotation', pin.get('rotation'), optional=True)
+
+    for record_index, hole in enumerate(data['mechanical_holes']):
+        key = hole.get('id', record_index)
+        check_numeric('mechanical_hole', key, 'x', hole.get('x'))
+        check_numeric('mechanical_hole', key, 'y', hole.get('y'))
+        check_numeric('mechanical_hole', key, 'diameter', hole.get('diameter'), positive=True)
+
+    for record_index, component in enumerate(data['components']):
+        key = component.get('reference', record_index)
+        if 'position' in component:
+            check_point('component', key, 'position', component.get('position'))
+        check_numeric('component', key, 'rotation', component.get('rotation'), optional=True)
+
+    for stack_index, stack in enumerate(data['padstacks']):
+        key = stack.get('name', stack_index)
+        check_numeric('padstack', key, 'drill', stack.get('drill'),
+                      nonnegative=True, optional=True)
+        for entry_index, entry in enumerate(stack.get('pads', [])):
+            check_numeric('padstack_pad', f'{key}:{entry_index}', 'rotation',
+                          entry.get('rotation'), optional=True)
+
+    for group_type, groups in (('board_artwork', data['board_artworks']),
+                               ('pad_geometry', data['pads'])):
+        for group_index, group in enumerate(groups):
+            group_key = group.get('name', group_index)
+            for geometry_index, geometry in enumerate(group.get('geometry', [])):
+                geometry_key = f'{group_key}:{geometry_index}'
+                geometry_type = geometry.get('type')
+                if geometry_type == 'line':
+                    check_point(group_type, geometry_key, 'p1',
+                                geometry.get('p1'), optional=True)
+                    check_point(group_type, geometry_key, 'p2',
+                                geometry.get('p2'), optional=True)
+                elif geometry_type == 'arc':
+                    arc_points = [
+                        check_point(group_type, geometry_key, field,
+                                    geometry.get(field), optional=True)
+                        for field in ('start', 'end', 'center')
+                    ]
+                    if all(arc_points):
+                        radius_start = math.dist(geometry['start'], geometry['center'])
+                        radius_end = math.dist(geometry['end'], geometry['center'])
+                        if radius_start <= tolerance or radius_end <= tolerance:
+                            report('blocking_errors', 'invalid_numeric_value',
+                                   group_type, geometry_key, 'radius',
+                                   f'{group_type} arc radius must be greater than the geometry tolerance')
+                elif geometry_type == 'circle':
+                    check_point(group_type, geometry_key, 'center',
+                                geometry.get('center'), optional=True)
+                    check_numeric(group_type, geometry_key, 'radius',
+                                  geometry.get('radius'), positive=True, optional=True)
+                elif geometry_type == 'rectangle':
+                    for field in ('x', 'y'):
+                        check_numeric(group_type, geometry_key, field,
+                                      geometry.get(field), optional=True)
+                    for field in ('width', 'height'):
+                        check_numeric(group_type, geometry_key, field,
+                                      geometry.get(field), positive=True, optional=True)
 
     duplicate_geometry = {}
     seen_vias = 0
