@@ -22,6 +22,259 @@ def enrich_geometry(g):
     return out
 
 
+def audit_conversion_integrity(data, tolerance=1e-4, max_examples=20):
+    """Report source route and geometry ambiguities without modifying them."""
+    counts = {'blocking_errors': 0, 'warnings': 0, 'informational': 0, 'ambiguous': 0}
+    issues = []
+    route_counts = {
+        'routes_checked': len(data['routes']),
+        'primitive_records_checked': 0,
+        'adjacent_primitive_pairs_checked': 0,
+        'connected_pairs': 0,
+        'disconnected_pairs': 0,
+        'via_transitions_checked': 0,
+        'via_transitions_connected': 0,
+        'vias_without_layer_context': 0,
+        'layer_changes_without_adjacent_via': 0,
+        'arc_line_transitions': 0,
+        'route_arcs_without_explicit_direction': 0,
+        'duplicate_route_geometries': 0,
+        'routes_with_empty_primitive_stream': 0,
+    }
+
+    def report(severity, code, entity, key, value, message):
+        counts[severity] += 1
+        if len(issues) < max_examples:
+            issues.append({'severity': severity, 'code': code, 'entity': entity,
+                           'key': key, 'value': value, 'message': message})
+
+    def finite(value):
+        try:
+            return value is not None and math.isfinite(float(value))
+        except (TypeError, ValueError):
+            return False
+
+    def primitive_geometry(route, primitive):
+        if primitive.get('kind') == 'segment':
+            index = primitive.get('index')
+            if not isinstance(index, int) or not 0 <= index < len(route['segments']):
+                return None
+            geometry = route['segments'][index]
+            if geometry.get('type') == 'line':
+                return geometry.get('p1'), geometry.get('p2'), geometry
+            if geometry.get('type') == 'arc':
+                return geometry.get('start'), geometry.get('end'), geometry
+        elif primitive.get('kind') == 'via':
+            index = primitive.get('index')
+            if not isinstance(index, int) or not 0 <= index < len(route['vias']):
+                return None
+            via = route['vias'][index]
+            if via.get('x') is not None and via.get('y') is not None:
+                point = [via['x'], via['y']]
+                return point, point, via
+        return None
+
+    for entity, records, fields in (
+            ('track', data['tracks'], ('width',)),
+            ('shape_pin', (pin for shape in data['shapes'] for pin in shape.get('pins', [])),
+             ('x', 'y')),
+            ('mechanical_hole', data['mechanical_holes'], ('x', 'y', 'diameter'))):
+        for record_index, record in enumerate(records):
+            for field in fields:
+                value = record.get(field)
+                if not finite(value) or (
+                        field in ('width', 'diameter') and float(value) <= 0):
+                    report('blocking_errors', 'invalid_numeric_value', entity,
+                           record.get('id', record.get('name', record_index)), field,
+                           f'{entity} {field} must be a finite positive number')
+
+    duplicate_geometry = {}
+    seen_vias = 0
+    for route_index, route in enumerate(data['routes']):
+        primitives = route.get('primitives', [])
+        segments = route.get('segments', [])
+        vias = route.get('vias', [])
+        route_name = route.get('net', route_index)
+        route_counts['primitive_records_checked'] += len(primitives)
+        if not primitives:
+            route_counts['routes_with_empty_primitive_stream'] += 1
+
+        if len(primitives) != len(segments) + len(vias):
+            report('blocking_errors', 'primitive_count_mismatch', 'route',
+                   route_name, len(primitives),
+                   'Primitive stream does not reference every segment and via exactly once')
+
+        seen_segments = set()
+        seen_route_vias = set()
+        for order, primitive in enumerate(primitives):
+            kind = primitive.get('kind')
+            index = primitive.get('index')
+            target = segments if kind == 'segment' else vias if kind == 'via' else ()
+            seen = seen_segments if kind == 'segment' else seen_route_vias
+            if (not isinstance(index, int) or not 0 <= index < len(target)
+                    or index in seen):
+                report('blocking_errors', 'invalid_primitive_reference', 'route',
+                       route_name, {'order': order, 'kind': kind, 'index': index},
+                       'Primitive has an invalid or duplicate source-record reference')
+                continue
+            seen.add(index)
+            source_order = target[index].get('source_order')
+            if source_order != order:
+                report('blocking_errors', 'primitive_source_order_mismatch', 'route',
+                       route_name, {'order': order, 'source_order': source_order},
+                       'Primitive order differs from the original route record order')
+            if kind == 'via':
+                seen_vias += 1
+                if target[index].get('layer_context') is None:
+                    route_counts['vias_without_layer_context'] += 1
+                if not finite(target[index].get('x')) or not finite(target[index].get('y')):
+                    report('blocking_errors', 'invalid_via_position', 'route',
+                           route_name, order,
+                           'Via coordinates must be finite numeric values')
+
+        if seen_segments != set(range(len(segments))) or seen_route_vias != set(range(len(vias))):
+            report('blocking_errors', 'unreferenced_route_record', 'route',
+                   route_name, {'segments': len(segments), 'vias': len(vias)},
+                   'Route contains segments or vias missing from its primitive stream')
+
+        resolved = [primitive_geometry(route, primitive) for primitive in primitives]
+        for index, (left, right) in enumerate(zip(primitives, primitives[1:])):
+            route_counts['adjacent_primitive_pairs_checked'] += 1
+            left_geom, right_geom = resolved[index], resolved[index + 1]
+            if left_geom is None or right_geom is None:
+                continue
+            left_points = left_geom[:2]
+            right_points = right_geom[:2]
+            distances = [
+                math.dist(a, b)
+                for a in left_points for b in right_points
+                if a is not None and b is not None
+                and len(a) == 2 and len(b) == 2
+                and all(math.isfinite(float(value)) for value in (*a, *b))
+            ]
+            if not distances:
+                continue
+            gap = min(distances)
+            left_is_via = left.get('kind') == 'via'
+            right_is_via = right.get('kind') == 'via'
+            if left_is_via or right_is_via:
+                route_counts['via_transitions_checked'] += 1
+                if gap <= tolerance:
+                    route_counts['via_transitions_connected'] += 1
+                else:
+                    report('warnings', 'via_transition_gap', 'route',
+                           route_name, {'order': index, 'distance': gap},
+                           'Adjacent route geometry does not terminate at the via center')
+            elif gap <= tolerance:
+                route_counts['connected_pairs'] += 1
+            else:
+                route_counts['disconnected_pairs'] += 1
+                report('warnings', 'route_discontinuity', 'route',
+                       route_name, {'order': index, 'distance': gap},
+                       'Adjacent source primitives do not share an endpoint; route fragments are preserved')
+
+            if (not left_is_via and not right_is_via
+                    and left_geom[2].get('layer') != right_geom[2].get('layer')
+                    and gap <= tolerance):
+                route_counts['layer_changes_without_adjacent_via'] += 1
+                report('ambiguous', 'connected_layer_change_without_via', 'route',
+                       route_name, {'order': index,
+                                    'from_layer': left_geom[2].get('layer'),
+                                    'to_layer': right_geom[2].get('layer')},
+                       'Connected primitives change layer without an intervening VIA record')
+
+            if ((left_geom[2].get('type') == 'arc' and right_geom[2].get('type') == 'line')
+                    or (left_geom[2].get('type') == 'line' and right_geom[2].get('type') == 'arc')):
+                route_counts['arc_line_transitions'] += 1
+
+        for segment in segments:
+            if segment.get('type') not in ('line', 'arc'):
+                continue
+            if segment.get('type') == 'arc' and not segment.get('direction'):
+                route_counts['route_arcs_without_explicit_direction'] += 1
+            points = ((segment.get('p1'), segment.get('p2'))
+                      if segment['type'] == 'line'
+                      else (segment.get('start'), segment.get('end'), segment.get('center')))
+            if not all(point is not None and len(point) == 2
+                       and all(finite(value) for value in point)
+                       for point in points):
+                report('blocking_errors', 'invalid_route_geometry', 'route',
+                       route_name, segment.get('source_order'),
+                       'Route primitive coordinates must be finite numeric pairs')
+                continue
+            if segment['type'] == 'line':
+                if math.dist(*points) <= tolerance:
+                    report('blocking_errors', 'zero_length_route_segment', 'route',
+                           route_name, segment.get('source_order'),
+                           'Route line has coincident endpoints')
+                endpoints = tuple(sorted(tuple(float(v) for v in point) for point in points))
+                key = (route_name, segment.get('layer'), 'line', endpoints)
+            else:
+                start, end, center = points
+                radius_start = math.dist(start, center)
+                radius_end = math.dist(end, center)
+                if radius_start <= tolerance or radius_end <= tolerance:
+                    report('blocking_errors', 'degenerate_route_arc', 'route',
+                           route_name, segment.get('source_order'),
+                           'Route arc has a zero or near-zero radius')
+                    continue
+                if abs(radius_start-radius_end) > max(
+                        1e-6, max(radius_start, radius_end)*1e-4):
+                    report('warnings', 'route_arc_radius_mismatch', 'route',
+                           route_name, segment.get('source_order'),
+                           'Route arc endpoint radii differ; source geometry is retained')
+                endpoints = tuple(sorted((tuple(float(v) for v in start),
+                                          tuple(float(v) for v in end))))
+                key = (route_name, segment.get('layer'), 'arc', endpoints,
+                       tuple(float(v) for v in center))
+            if key in duplicate_geometry:
+                route_counts['duplicate_route_geometries'] += 1
+                report('warnings', 'duplicate_route_geometry', 'route',
+                       route_name, segment.get('source_order'),
+                       'Exact route geometry is repeated on the same net and layer')
+            else:
+                duplicate_geometry[key] = segment.get('source_order')
+
+    if seen_vias:
+        report('ambiguous', 'via_layer_span_interpretation', 'via',
+               'source', seen_vias,
+               'Via layer spans are preserved from GenCAD; physical transitions are not inferred')
+
+    if route_counts['vias_without_layer_context']:
+        report('ambiguous', 'via_layer_context_missing', 'via', 'routes',
+               route_counts['vias_without_layer_context'],
+               'Via layer context is absent; the source span and padstack are retained')
+    if route_counts['route_arcs_without_explicit_direction']:
+        report('ambiguous', 'arc_direction_not_explicit', 'arc', 'routes',
+               route_counts['route_arcs_without_explicit_direction'],
+               'Route arc direction is not explicit in the parsed source')
+
+    transformed = [component for component in data['components']
+                   if component.get('shape_extra')]
+    if transformed:
+        report('ambiguous', 'component_transform_semantics', 'component',
+               'shape_transform_tokens', len(transformed),
+               'Component transformation tokens are preserved; their source semantics are not validated')
+
+    for stack in data['padstacks']:
+        inner_entries = sum(entry.get('layer') == 'INNER'
+                            for entry in stack.get('pads', []))
+        if inner_entries > 1:
+            report('informational', 'repeated_inner_layers_normalized', 'padstack',
+                   stack.get('name'), inner_entries,
+                   'Repeated INNER entries are distinguished by source order in PV')
+
+    return {
+        'status': 'review_required' if any(counts.values()) else 'clear',
+        'tolerance_source_units': tolerance,
+        'counts': counts,
+        'route_summary': route_counts,
+        'issues': issues,
+        'issues_truncated': sum(counts.values()) > len(issues),
+        'source_geometry_modified': False,
+    }
+
+
 
 def validate_references(data):
     """Validate semantic references before assigning PV identifiers.
@@ -33,12 +286,6 @@ def validate_references(data):
     def issue(severity, code, entity, key, value, message):
         issues.append({'severity':severity,'code':code,'entity':entity,
                        'key':key,'value':value,'message':message})
-    def finite_number(value):
-        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
-
-    def valid_pair(value):
-        return isinstance(value, (list, tuple)) and len(value) == 2 and all(finite_number(v) for v in value)
-
     def index(items, key, label):
         result = {}
         for pos, item in enumerate(items):
@@ -64,12 +311,6 @@ def validate_references(data):
     # for source records that intentionally describe an unplaced/unfootprinted part.
     for c in data['components']:
         ref, shape = c.get('reference'), c.get('shape')
-        if 'position' in c and not valid_pair(c.get('position')):
-            issue('error','invalid_component_position','component',ref,c.get('position'),
-                  'Component placement must contain two finite numeric coordinates')
-        if c.get('rotation') is not None and not finite_number(c.get('rotation')):
-            issue('error','invalid_component_rotation','component',ref,c.get('rotation'),
-                  'Component rotation must be a finite number')
         if not shape:
             issue('warning','component_without_shape','component',ref,None,
                   'Component has no SHAPE declaration; no pins can be generated')
@@ -85,14 +326,6 @@ def validate_references(data):
                 issue('error','duplicate_shape_pin','shape',sh.get('name'),number,
                       'Pin number is duplicated within this shape; pin lookup would be ambiguous')
             pin_numbers.add(number)
-            if not finite_number(pin.get('x')) or not finite_number(pin.get('y')):
-                issue('error','invalid_shape_pin_position','shape_pin',
-                      f"{sh.get('name')}:{number}",[pin.get('x'),pin.get('y')],
-                      'Shape pin position must contain finite numeric X/Y coordinates')
-            if pin.get('rotation') is not None and not finite_number(pin.get('rotation')):
-                issue('error','invalid_shape_pin_rotation','shape_pin',
-                      f"{sh.get('name')}:{number}",pin.get('rotation'),
-                      'Shape pin rotation must be a finite number')
             stack = pin.get('padstack')
             if not stack or stack not in stacks:
                 issue('error','missing_pin_padstack','shape_pin',
@@ -100,15 +333,7 @@ def validate_references(data):
                       'Pin references a padstack that does not exist')
 
     for st in data['padstacks']:
-        drill = st.get('drill')
-        if drill is not None and (not finite_number(drill) or drill < 0):
-            issue('error','invalid_padstack_drill','padstack',st.get('name'),drill,
-                  'Padstack drill must be a finite non-negative number')
         for entry in st.get('pads', []):
-            rotation = entry.get('rotation')
-            if rotation is not None and not finite_number(rotation):
-                issue('error','invalid_padstack_pad_rotation','padstack',
-                      st.get('name'),rotation,'Pad rotation must be a finite number')
             pad = entry.get('pad')
             if not pad or pad not in pads:
                 issue('error','missing_pad_geometry','padstack',
@@ -130,12 +355,6 @@ def validate_references(data):
                       f'{cref}:{pnum}',
                       'Node pin cannot be resolved through the component shape')
 
-    for track in data['tracks']:
-        width = track.get('width')
-        if width is not None and (not finite_number(width) or width <= 0):
-            issue('error','invalid_track_width','track',track.get('id'),width,
-                  'Track width must be a finite positive number')
-
     for route in data['routes']:
         net = route.get('net')
         if not net or net not in signals:
@@ -153,20 +372,16 @@ def validate_references(data):
                       'Segment has no explicit layer context')
             if seg.get('type') == 'line':
                 pts = (seg.get('p1'), seg.get('p2'))
-                if any(not valid_pair(pt) for pt in pts):
+                if any(not pt or len(pt) != 2 or any(v is None for v in pt) for pt in pts):
                     issue('error','invalid_line_geometry','route_segment',
                           route.get('net'),seg.get('source_order'),
-                          'Line is missing valid finite numeric endpoints')
-                elif math.dist(*pts) <= 1e-12:
-                    issue('error','degenerate_line','route_segment',
-                          route.get('net'),seg.get('source_order'),
-                          'Line endpoints are coincident; segment has zero length')
+                          'Line is missing valid numeric endpoints')
             elif seg.get('type') == 'arc':
                 pts = (seg.get('start'), seg.get('end'), seg.get('center'))
-                if any(not valid_pair(pt) for pt in pts):
+                if any(not pt or len(pt) != 2 or any(v is None for v in pt) for pt in pts):
                     issue('error','invalid_arc_geometry','route_segment',
                           route.get('net'),seg.get('source_order'),
-                          'Arc is missing valid finite numeric start/end/center')
+                          'Arc is missing valid numeric start/end/center')
                 else:
                     r1=math.dist(seg['start'],seg['center'])
                     r2=math.dist(seg['end'],seg['center'])
@@ -187,9 +402,9 @@ def validate_references(data):
             if stack and stack not in stacks:
                 issue('error','missing_via_padstack','via',route.get('net'),stack,
                       'Via references a padstack that does not exist')
-            if not finite_number(via.get('x')) or not finite_number(via.get('y')):
+            if via.get('x') is None or via.get('y') is None:
                 issue('error','invalid_via_position','via',route.get('net'),via.get('raw'),
-                      'Via is missing finite numeric coordinates')
+                      'Via is missing numeric coordinates')
 
     # Source layer declarations must be unique; inferred route/component layers
     # are added later and remain explicitly marked as source-derived.
@@ -207,29 +422,16 @@ def validate_references(data):
                             ('x','y','width','height') if t=='rectangle' else ())
                 for field in required:
                     value=g.get(field)
-                    if isinstance(value,(list,tuple)):
-                        valid=valid_pair(value)
+                    if isinstance(value,list):
+                        valid=len(value)==2 and all(v is not None for v in value)
                     else:
-                        valid=finite_number(value)
+                        valid=value is not None
                     if not valid:
                         issue('error','invalid_geometry_record',group_name,
                               group.get('name'),f'{gi}:{field}',
                               f'Known geometry primitive is missing valid {field}')
-                if t=='line' and valid_pair(g.get('p1')) and valid_pair(g.get('p2')):
-                    if math.dist(g['p1'],g['p2']) <= 1e-12:
-                        issue('error','degenerate_line',group_name,group.get('name'),gi,
-                              'Line endpoints are coincident; segment has zero length')
-                if t=='circle' and finite_number(g.get('radius')) and g['radius'] <= 0:
-                    issue('error','invalid_circle_radius',group_name,group.get('name'),gi,
-                          'Circle radius must be a finite positive number')
-                if t=='rectangle':
-                    if finite_number(g.get('width')) and g['width'] <= 0:
-                        issue('error','invalid_rectangle_width',group_name,group.get('name'),gi,
-                              'Rectangle width must be positive')
-                    if finite_number(g.get('height')) and g['height'] <= 0:
-                        issue('error','invalid_rectangle_height',group_name,group.get('name'),gi,
-                              'Rectangle height must be positive')
-                if t=='arc' and all(valid_pair(g.get(k)) for k in ('start','end','center')):
+                if t=='arc' and all(g.get(k) and all(v is not None for v in g[k])
+                                    for k in ('start','end','center')):
                     r1=math.dist(g['start'],g['center'])
                     r2=math.dist(g['end'],g['center'])
                     if r1 == 0 or r2 == 0:
@@ -239,24 +441,16 @@ def validate_references(data):
                         issue('warning','arc_radius_mismatch',group_name,group.get('name'),gi,
                               'Arc endpoint radii differ; source geometry is retained')
 
-    for hole in data.get('mechanical_holes', []):
-        if not finite_number(hole.get('x')) or not finite_number(hole.get('y')):
-            issue('error','invalid_mechanical_hole_position','mechanical_hole',
-                  hole.get('raw'),[hole.get('x'),hole.get('y')],
-                  'Mechanical hole must have finite numeric X/Y coordinates')
-        diameter = hole.get('diameter')
-        if not finite_number(diameter) or diameter <= 0:
-            issue('error','invalid_mechanical_hole_diameter','mechanical_hole',
-                  hole.get('raw'),diameter,
-                  'Mechanical hole diameter must be a finite positive number')
-
     errors = sum(x['severity']=='error' for x in issues)
     warnings = sum(x['severity']=='warning' for x in issues)
-    return {'status':'failed' if errors else 'passed',
-            'error_count':errors,'warning_count':warnings,
+    integrity = audit_conversion_integrity(data)
+    integrity_errors = integrity['counts']['blocking_errors']
+    return {'status':'failed' if errors or integrity_errors else 'passed',
+            'error_count':errors + integrity_errors,
+            'warning_count':warnings + integrity['counts']['warnings'],
             'checked_reference_domains':['shapes','padstacks','pads','components',
                 'signals','nodes','routes','tracks','vias','layers','geometry'],
-            'issues':issues}
+            'issues':issues,'integrity_diagnostics':integrity}
 
 
 

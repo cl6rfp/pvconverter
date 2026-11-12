@@ -101,7 +101,7 @@ def parse_file(path: str):
         if not t: continue
         if t[0]=='SHAPE' and len(t)>=2:
             current={'name':t[1],'pins':[],'inserts':[],'other':[]}; out['shapes'].append(current)
-        elif current is not None and t[0]=='PIN' and len(t)>=7:
+        elif current is not None and t[0]=='PIN' and len(t)>=8:
             # PIN number padstack x y layer rotation [mirror]
             current['pins'].append({'number':t[1],'padstack':t[2],'x':fnum(t[3]),'y':fnum(t[4]),'layer':t[5],'rotation':fnum(t[6]),'extra':t[7:]})
         elif current is not None and t[0]=='INSERT': current['inserts'].append(t[1:])

@@ -37,7 +37,9 @@ def _arc_extrema_points(g, sweep_deg=None):
     for angle in (0.0, math.pi/2, math.pi, 3*math.pi/2):
         delta = ((angle-start) % (2*math.pi)) if direction > 0 else ((start-angle) % (2*math.pi))
         if delta <= span + 1e-10:
-            points.append((cx + radius*math.cos(angle), cy + radius*math.sin(angle)))
+            point = (cx + radius*math.cos(angle), cy + radius*math.sin(angle))
+            if all(math.dist(point, existing) > 1e-10 for existing in points):
+                points.append(point)
     return points
 
 
@@ -201,6 +203,7 @@ def geometry_report(pv_path):
     if source_block.get('encoding')=='base64-latin-1':
         source_bytes=base64.b64decode(source_block['data'])
         source_hash_ok=hashlib.sha256(source_bytes).hexdigest()==b['META'].get('source_sha256')==source_block.get('sha256')
+    validation_data=b.get('VALD',{})
     ref_errors=[]
     seg_by={x['id']:x for x in segs}; via_by={x['id']:x for x in vias}
     for r in routes:
@@ -222,7 +225,9 @@ def geometry_report(pv_path):
       'arc_records':arcs,'arc_direction_not_explicit':direction_not_explicit,
       'semicircle_arcs_with_equal_sweep_candidates':semicircle_arcs,
       'source_sha256_matches':source_hash_ok,
-      'route_reference_errors':ref_errors,'valid':not ref_errors and source_hash_ok is not False
+      'route_reference_errors':ref_errors,'valid':not ref_errors and source_hash_ok is not False,
+      'pv_validation_status':validation_data.get('status'),
+      'integrity_diagnostics':validation_data.get('integrity_diagnostics')
     }
 
 

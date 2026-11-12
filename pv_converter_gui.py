@@ -63,6 +63,19 @@ class PVConverterApp(tk.Tk):
             self.write(f'PV creado: {dst} ({info["file_size"]:,} bytes)')
             report=geometry_report(dst)
             self.write(f'Validación: {"CORRECTA" if report["valid"] else "REVISAR"}; {report["segments"]:,} segmentos, {report["vias"]:,} vías, {report["arc_records"]:,} arcos.')
+            diagnostics=report.get('integrity_diagnostics')
+            if diagnostics:
+                counts=diagnostics['counts']
+                route=diagnostics['route_summary']
+                self.write(
+                    'Integridad: '
+                    f'{counts["blocking_errors"]} errores, {counts["warnings"]} avisos, '
+                    f'{counts["ambiguous"]} casos ambiguos, {counts["informational"]} informativos.')
+                self.write(
+                    f'Continuidad: {route["connected_pairs"]:,} pares conectados, '
+                    f'{route["disconnected_pairs"]:,} discontinuidades; '
+                    f'{route["via_transitions_connected"]:,}/{route["via_transitions_checked"]:,} '
+                    'transiciones con vía conectadas.')
             messagebox.showinfo('Conversión terminada',f'Archivo PV creado correctamente.\n\n{dst}\n\nTamaño: {info["file_size"]:,} bytes')
         except Exception as e:self.fail(e)
 
@@ -76,6 +89,13 @@ class PVConverterApp(tk.Tk):
             self.write(f'{report["components"]:,} componentes | {report["segments"]:,} segmentos | {report["vias"]:,} vías | {report["arc_records"]:,} arcos')
             self.write('Integridad de fuente SHA-256: '+('OK' if report['source_sha256_matches'] else 'NO VERIFICADA'))
             self.write('Referencias de rutas: '+('OK' if report['valid'] else 'REVISAR'))
+            diagnostics=report.get('integrity_diagnostics')
+            if diagnostics:
+                counts=diagnostics['counts']
+                self.write(
+                    'Diagnóstico de integridad: '
+                    f'{counts["blocking_errors"]} errores, {counts["warnings"]} avisos, '
+                    f'{counts["ambiguous"]} casos ambiguos, {counts["informational"]} informativos.')
             messagebox.showinfo('PV validado',f'Archivo leído correctamente.\nComponentes: {report["components"]:,}\nSegmentos: {report["segments"]:,}\nVías: {report["vias"]:,}\nArcos: {report["arc_records"]:,}')
         except Exception as e:self.fail(e)
 

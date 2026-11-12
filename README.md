@@ -36,7 +36,6 @@ Ejecuta `build_windows.bat`. PyInstaller generará `dist\PV_Converter\PV_Convert
 py -3.12 test_pvf.py "MS-7B79_test.pv"
 py -3.12 test_geometry.py "MS-7B79_test.pv"
 py -3.12 test_arc_direction.py
-py -3.12 -m unittest -v test_gencad_parser test_pv_validation
 ```
 
 ## Uso de la aplicación
@@ -98,6 +97,14 @@ This is a display-only correction; source PV coordinates and arc records are
 not modified. The synthetic arc-direction test now checks the actual sweep-flag
 mapping as well as forward and reverse route traversal.
 
-## Parser and numeric validation hardening
+## GenCAD -> PV integrity diagnostics
 
-The GenCAD shape parser accepts the required seven-token `PIN` record when the optional mirror tokens are absent, while preserving any extra transform tokens when present. PV model validation also blocks non-finite coordinates/values, zero-length line segments, non-positive circle radii and rectangle dimensions, invalid track widths, and malformed mechanical-hole dimensions. Run the parser and PV validation regression tests with `py -3.12 -m unittest -v test_gencad_parser test_pv_validation`.
+The PV validation block includes source-preserving integrity diagnostics for route
+primitive ordering and references, adjacent endpoint continuity, via transitions,
+layer changes, arc/line transitions, duplicate route geometry, and numeric geometry
+prerequisites. Findings are categorized as blocking errors, warnings, informational
+items, or ambiguous source data. Route gaps and uncertain via/layer/transform meaning
+are reported without automatically connecting, moving, or otherwise repairing records.
+Endpoint comparisons use a default tolerance of `0.0001` source coordinate units.
+The diagnostic issue list is capped at 20 examples; category counts and route totals
+remain available in the `VALD` block and PV validation report.

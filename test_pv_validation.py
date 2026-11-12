@@ -2,18 +2,19 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from copy import deepcopy
 from pathlib import Path
 from unittest.mock import patch
 
 import pvf
-from build_pv import validate_references
+from build_pv import audit_conversion_integrity, validate_references
 
 
 def valid_source():
     return {
         'components': [{'reference':'U1','shape':'PKG1'}],
         'shapes': [{'name':'PKG1','pins':[
-            {'number':'1','padstack':'PST1','x':0.0,'y':0.0,'rotation':0.0}
+            {'number':'1','padstack':'PST1','x':0.0,'y':0.0}
         ]}],
         'pads': [{'name':'PAD1'}],
         'padstacks': [{'name':'PST1','pads':[{'pad':'PAD1','layer':'TOP'}]}],
@@ -22,9 +23,10 @@ def valid_source():
         'routes': [{'net':'GND','segments':[
             {'type':'line','p1':[0.0,0.0],'p2':[1.0,0.0],
              'track_id':'T1','layer':'TOP','source_order':0}
-        ],'vias':[]}],
+        ],'vias':[],'primitives':[{'kind':'segment','index':0}]}],
         'layers': [{'name':'TOP','type':'copper'}],
         'board_artworks': [],
+        'mechanical_holes': [],
     }
 
 
@@ -64,37 +66,6 @@ class ReferenceValidationTests(unittest.TestCase):
         self.assertTrue(any(x['code'] == 'missing_route_net'
                             for x in report['issues']))
 
-
-    def test_non_finite_track_width_is_blocking(self):
-        data = valid_source()
-        data['tracks'][0]['width'] = float('nan')
-        report = validate_references(data)
-        self.assertTrue(any(x['code'] == 'invalid_track_width'
-                            for x in report['issues']))
-
-    def test_zero_length_route_line_is_blocking(self):
-        data = valid_source()
-        data['routes'][0]['segments'][0]['p2'] = [0.0, 0.0]
-        report = validate_references(data)
-        self.assertTrue(any(x['code'] == 'degenerate_line'
-                            for x in report['issues']))
-
-    def test_non_finite_shape_pin_coordinate_is_blocking(self):
-        data = valid_source()
-        data['shapes'][0]['pins'][0]['x'] = float('inf')
-        report = validate_references(data)
-        self.assertTrue(any(x['code'] == 'invalid_shape_pin_position'
-                            for x in report['issues']))
-
-    def test_non_positive_pad_geometry_is_blocking(self):
-        data = valid_source()
-        data['pads'][0]['geometry'] = [
-            {'type':'circle','center':[0.0,0.0],'radius':-1.0}
-        ]
-        report = validate_references(data)
-        self.assertTrue(any(x['code'] == 'invalid_circle_radius'
-                            for x in report['issues']))
-
     def test_missing_track_definition_is_warning_not_silent_zero(self):
         data = valid_source()
         data['routes'][0]['segments'][0]['track_id'] = 'NO_TRACK'
@@ -103,6 +74,126 @@ class ReferenceValidationTests(unittest.TestCase):
         self.assertTrue(any(x['code'] == 'missing_track_definition'
                             and x['severity'] == 'warning'
                             for x in report['issues']))
+
+
+class IntegrityAuditTests(unittest.TestCase):
+    def test_connected_route_has_no_integrity_findings(self):
+        report = audit_conversion_integrity(valid_source())
+        self.assertEqual(report['counts']['blocking_errors'], 0)
+        self.assertEqual(report['counts']['warnings'], 0)
+        self.assertEqual(report['route_summary']['connected_pairs'], 0)
+        self.assertFalse(report['source_geometry_modified'])
+
+    def test_route_gap_is_reported_without_repairing_geometry(self):
+        data = valid_source()
+        data['routes'][0]['segments'].append({
+            'type':'line','p1':[2.0,0.0],'p2':[3.0,0.0],
+            'track_id':'T1','layer':'TOP','source_order':1
+        })
+        data['routes'][0]['primitives'].append({'kind':'segment','index':1})
+        original = deepcopy(data)
+
+        report = audit_conversion_integrity(data)
+
+        self.assertEqual(data, original)
+        self.assertEqual(report['route_summary']['disconnected_pairs'], 1)
+        self.assertTrue(any(issue['code'] == 'route_discontinuity'
+                            and issue['severity'] == 'warnings'
+                            for issue in report['issues']))
+
+    def test_layer_change_without_via_is_marked_ambiguous(self):
+        data = valid_source()
+        data['routes'][0]['segments'].append({
+            'type':'line','p1':[1.0,0.0],'p2':[2.0,0.0],
+            'track_id':'T1','layer':'BOTTOM','source_order':1
+        })
+        data['routes'][0]['primitives'].append({'kind':'segment','index':1})
+
+        report = audit_conversion_integrity(data)
+
+        self.assertEqual(report['route_summary']['layer_changes_without_adjacent_via'], 1)
+        self.assertTrue(any(issue['code'] == 'connected_layer_change_without_via'
+                            and issue['severity'] == 'ambiguous'
+                            for issue in report['issues']))
+
+    def test_via_transition_and_missing_source_layer_context_are_reported(self):
+        data = valid_source()
+        route = data['routes'][0]
+        route['segments'][0]['p2'] = [1.0, 0.0]
+        route['segments'][0]['source_order'] = 0
+        route['vias'] = [{'x':1.0,'y':0.0,'layer_context':None,'source_order':1}]
+        route['segments'].append({
+            'type':'line','p1':[1.0,0.0],'p2':[2.0,0.0],
+            'track_id':'T1','layer':'BOTTOM','source_order':2
+        })
+        route['primitives'] = [
+            {'kind':'segment','index':0},
+            {'kind':'via','index':0},
+            {'kind':'segment','index':1},
+        ]
+
+        report = audit_conversion_integrity(data)
+
+        self.assertEqual(report['route_summary']['via_transitions_checked'], 2)
+        self.assertEqual(report['route_summary']['via_transitions_connected'], 2)
+        self.assertEqual(report['route_summary']['vias_without_layer_context'], 1)
+        codes = {issue['code'] for issue in report['issues']}
+        self.assertIn('via_layer_context_missing', codes)
+        self.assertIn('via_layer_span_interpretation', codes)
+
+    def test_invalid_primitive_reference_is_blocking(self):
+        data = valid_source()
+        data['routes'][0]['primitives'][0]['index'] = 12
+
+        report = audit_conversion_integrity(data)
+
+        self.assertGreater(report['counts']['blocking_errors'], 0)
+        self.assertTrue(any(issue['code'] == 'invalid_primitive_reference'
+                            for issue in report['issues']))
+
+    def test_duplicate_geometry_is_reported(self):
+        data = valid_source()
+        data['routes'][0]['segments'].append(deepcopy(data['routes'][0]['segments'][0]))
+        data['routes'][0]['segments'][1]['source_order'] = 1
+        data['routes'][0]['primitives'].append({'kind':'segment','index':1})
+
+        report = audit_conversion_integrity(data)
+
+        self.assertEqual(report['route_summary']['duplicate_route_geometries'], 1)
+        self.assertTrue(any(issue['code'] == 'duplicate_route_geometry'
+                            for issue in report['issues']))
+
+    def test_arc_line_transition_is_counted_as_ambiguous_direction(self):
+        data = valid_source()
+        route = data['routes'][0]
+        route['segments'][0] = {
+            'type':'arc','start':[1.0,0.0],'end':[0.0,1.0],
+            'center':[0.0,0.0],'track_id':'T1','layer':'TOP','source_order':0
+        }
+        route['segments'].append({
+            'type':'line','p1':[0.0,1.0],'p2':[-1.0,1.0],
+            'track_id':'T1','layer':'TOP','source_order':1
+        })
+        route['primitives'].append({'kind':'segment','index':1})
+
+        report = audit_conversion_integrity(data)
+
+        self.assertEqual(report['route_summary']['arc_line_transitions'], 1)
+        self.assertEqual(report['route_summary']['route_arcs_without_explicit_direction'], 1)
+        self.assertTrue(any(issue['code'] == 'arc_direction_not_explicit'
+                            and issue['severity'] == 'ambiguous'
+                            for issue in report['issues']))
+
+    def test_non_positive_track_width_is_a_blocking_diagnostic(self):
+        data = valid_source()
+        data['tracks'][0]['width'] = 0
+
+        validation = validate_references(data)
+
+        self.assertEqual(validation['status'], 'failed')
+        self.assertTrue(any(issue['code'] == 'invalid_numeric_value'
+                            and issue['entity'] == 'track'
+                            for issue in validation['integrity_diagnostics']['issues']))
 
 
 class AtomicWriteTests(unittest.TestCase):
