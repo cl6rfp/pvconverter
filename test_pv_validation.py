@@ -197,6 +197,79 @@ class IntegrityAuditTests(unittest.TestCase):
                             for issue in validation['integrity_diagnostics']['issues']))
 
 
+    def test_non_finite_component_position_is_blocking(self):
+        data = valid_source()
+        data['components'][0]['position'] = [float('nan'), 0.0]
+        validation = validate_references(data)
+        self.assertEqual(validation['status'], 'failed')
+        self.assertTrue(any(issue['code'] == 'invalid_numeric_value'
+                            and issue['entity'] == 'component'
+                            for issue in validation['integrity_diagnostics']['issues']))
+
+    def test_non_finite_component_rotation_is_blocking(self):
+        data = valid_source()
+        data['components'][0]['rotation'] = float('inf')
+        validation = validate_references(data)
+        self.assertEqual(validation['status'], 'failed')
+        self.assertTrue(any(issue['code'] == 'invalid_numeric_value'
+                            and issue['entity'] == 'component'
+                            and issue['value'] == 'rotation'
+                            for issue in validation['integrity_diagnostics']['issues']))
+
+    def test_negative_padstack_drill_is_blocking(self):
+        data = valid_source()
+        data['padstacks'][0]['drill'] = -0.2
+        validation = validate_references(data)
+        self.assertEqual(validation['status'], 'failed')
+        self.assertTrue(any(issue['code'] == 'invalid_numeric_value'
+                            and issue['entity'] == 'padstack'
+                            and issue['value'] == 'drill'
+                            for issue in validation['integrity_diagnostics']['issues']))
+
+    def test_zero_padstack_drill_is_allowed(self):
+        data = valid_source()
+        data['padstacks'][0]['drill'] = 0.0
+        validation = validate_references(data)
+        self.assertEqual(validation['status'], 'passed')
+
+    def test_non_finite_padstack_pad_rotation_is_blocking(self):
+        data = valid_source()
+        data['padstacks'][0]['pads'][0]['rotation'] = float('inf')
+        validation = validate_references(data)
+        self.assertEqual(validation['status'], 'failed')
+        self.assertTrue(any(issue['code'] == 'invalid_numeric_value'
+                            and issue['entity'] == 'padstack_pad'
+                            for issue in validation['integrity_diagnostics']['issues']))
+
+    def test_non_positive_pad_geometry_dimensions_are_blocking(self):
+        data = valid_source()
+        data['pads'][0]['geometry'] = [{
+            'type': 'rectangle', 'x': 0.0, 'y': 0.0,
+            'width': -1.0, 'height': 2.0,
+        }]
+        validation = validate_references(data)
+        self.assertEqual(validation['status'], 'failed')
+        self.assertTrue(any(issue['code'] == 'invalid_numeric_value'
+                            and issue['entity'] == 'pad_geometry'
+                            and issue['value'] == 'width'
+                            for issue in validation['integrity_diagnostics']['issues']))
+
+    def test_non_finite_artwork_coordinates_are_blocking(self):
+        data = valid_source()
+        data['board_artworks'] = [{
+            'name': 'ART1', 'layer': 'TOP',
+            'geometry': [{
+                'type': 'line', 'p1': [0.0, 0.0],
+                'p2': [float('inf'), 1.0],
+            }],
+        }]
+        validation = validate_references(data)
+        self.assertEqual(validation['status'], 'failed')
+        self.assertTrue(any(issue['code'] == 'invalid_numeric_value'
+                            and issue['entity'] == 'board_artwork'
+                            for issue in validation['integrity_diagnostics']['issues']))
+
+
 class GeometryReportValidationTests(unittest.TestCase):
     @staticmethod
     def write_minimal_pv(path, status, error_count=0, blocking_errors=0):
