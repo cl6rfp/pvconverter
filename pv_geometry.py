@@ -204,6 +204,21 @@ def geometry_report(pv_path):
         source_bytes=base64.b64decode(source_block['data'])
         source_hash_ok=hashlib.sha256(source_bytes).hexdigest()==b['META'].get('source_sha256')==source_block.get('sha256')
     validation_data=b.get('VALD',{})
+    try:
+        validation_error_count=int(validation_data.get('error_count',0) or 0)
+    except (TypeError, ValueError, OverflowError):
+        # A malformed validation count must never make a damaged file look valid.
+        validation_error_count=1
+    integrity_counts=(validation_data.get('integrity_diagnostics') or {}).get('counts') or {}
+    try:
+        validation_blocking_errors=int(integrity_counts.get('blocking_errors',0) or 0)
+    except (TypeError, ValueError, OverflowError):
+        validation_blocking_errors=1
+    validation_failed=(
+        validation_data.get('status')=='failed'
+        or validation_error_count>0
+        or validation_blocking_errors>0
+    )
     ref_errors=[]
     seg_by={x['id']:x for x in segs}; via_by={x['id']:x for x in vias}
     for r in routes:
@@ -225,9 +240,13 @@ def geometry_report(pv_path):
       'arc_records':arcs,'arc_direction_not_explicit':direction_not_explicit,
       'semicircle_arcs_with_equal_sweep_candidates':semicircle_arcs,
       'source_sha256_matches':source_hash_ok,
-      'route_reference_errors':ref_errors,'valid':not ref_errors and source_hash_ok is not False,
+      'route_reference_errors':ref_errors,
       'pv_validation_status':validation_data.get('status'),
-      'integrity_diagnostics':validation_data.get('integrity_diagnostics')
+      'pv_validation_error_count':validation_error_count,
+      'pv_validation_blocking_errors':validation_blocking_errors,
+      'pv_validation_failed':validation_failed,
+      'integrity_diagnostics':validation_data.get('integrity_diagnostics'),
+      'valid':not ref_errors and source_hash_ok is not False and not validation_failed
     }
 
 
