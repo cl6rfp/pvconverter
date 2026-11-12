@@ -30,13 +30,32 @@ La aplicación también puede iniciarse con `C:\PV_Converter\.venv\Scripts\pytho
 
 Ejecuta `build_windows.bat`. PyInstaller generará `dist\PV_Converter\PV_Converter.exe`. Se distribuye la carpeta completa `PV_Converter`, no solo el EXE, porque contiene las bibliotecas necesarias.
 
-## Pruebas sobre el PV incluido
+## Pruebas
+
+Ejecuta las pruebas unitarias y sintéticas:
 
 ```bat
-py -3.12 test_pvf.py "MS-7B79_test.pv"
-py -3.12 test_geometry.py "MS-7B79_test.pv"
+py -3.12 -m unittest -v test_gencad_parser test_pv_validation
 py -3.12 test_arc_direction.py
 ```
+
+El archivo `MS-7B79_test.pv` es un fixture histórico anterior al bloque `VALD`;
+se utiliza para comprobar la geometría, no para las comprobaciones PVF actuales:
+
+```bat
+py -3.12 test_geometry.py "MS-7B79_test.pv"
+```
+
+Para validar el contenedor y la conversión actual, genera un PV nuevo desde el CAD
+de referencia y ejecuta las dos comprobaciones sobre ese archivo:
+
+```bat
+py -3.12 build_pv.py "MS-7B79 r1.0.cad" "generated/MS-7B79 r1.0_ci.pv"
+py -3.12 test_pvf.py "generated/MS-7B79 r1.0_ci.pv"
+py -3.12 test_geometry.py "generated/MS-7B79 r1.0_ci.pv"
+```
+
+GitHub Actions ejecuta automáticamente esta batería al actualizar `main`.
 
 ## Uso de la aplicación
 
@@ -46,7 +65,8 @@ py -3.12 test_arc_direction.py
 
 ## Estado y límites conocidos
 
-- El archivo de prueba contiene 17 bloques. Las cargas semánticas siguen serializadas como JSON UTF-8 comprimido con Zstandard dentro de un contenedor binario; todavía no es la codificación compacta definitiva.
+- Las conversiones actuales generan 18 bloques PVF, incluido `VALD` para diagnósticos de integridad. Las cargas semánticas siguen serializadas como JSON UTF-8 comprimido con Zstandard dentro de un contenedor binario; todavía no es la codificación compacta definitiva.
+- La auditoría numérica bloquea valores no finitos en componentes, pines, padstacks, geometrías de pads y ARTWORK; exige dimensiones positivas en círculos/rectángulos y permite perforación cero en padstacks sin taladro.
 - Las coordenadas conservan las unidades fuente `USER 1000`; no se convierten a milímetros porque la escala física no está demostrada.
 - Los tokens `MIRRORY FLIP` se conservan sin aplicar una transformación geométrica no verificada.
 - Los registros GenCAD no contienen un token explícito que indique el sentido de los arcos. El exportador SVG evalúa el sentido de recorrido de la ruta en ambas orientaciones (inicio→final y final→inicio) y utiliza la continuidad tangencial de los segmentos vecinos cuando existe evidencia suficiente. La selección es solo para visualización y no modifica los datos del archivo `.pv`. Los casos ambiguos se identifican y usan un arco menor como alternativa diagnóstica.
