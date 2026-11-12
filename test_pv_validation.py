@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 import pvf
 from build_pv import audit_conversion_integrity, validate_references
+from pv_geometry import geometry_report
 
 
 def valid_source():
@@ -194,6 +195,60 @@ class IntegrityAuditTests(unittest.TestCase):
         self.assertTrue(any(issue['code'] == 'invalid_numeric_value'
                             and issue['entity'] == 'track'
                             for issue in validation['integrity_diagnostics']['issues']))
+
+
+class GeometryReportValidationTests(unittest.TestCase):
+    @staticmethod
+    def write_minimal_pv(path, status, error_count=0, blocking_errors=0):
+        empty_blocks = {
+            'LAYR': [], 'COMP': [], 'SHAP': [], 'PINS': [], 'PADS': [],
+            'PSTK': [], 'NETS': [], 'SEGS': [], 'VIAS': [], 'PRIM': [],
+            'ROUT': [], 'HOLE': [], 'TRKS': [], 'ARTW': [],
+        }
+        blocks = [
+            {'id': 'META', 'data': {}, 'record_count': 1},
+            {'id': 'VALD', 'data': {
+                'status': status,
+                'error_count': error_count,
+                'integrity_diagnostics': {
+                    'counts': {'blocking_errors': blocking_errors}
+                },
+            }, 'record_count': 0},
+        ]
+        blocks.extend(
+            {'id': block_id, 'data': data, 'record_count': len(data)}
+            for block_id, data in empty_blocks.items()
+        )
+        pvf.write_pvf(path, blocks)
+
+    def test_report_is_invalid_when_validation_block_failed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'failed.pv'
+            self.write_minimal_pv(path, 'failed', error_count=1)
+            report = geometry_report(path)
+
+        self.assertFalse(report['valid'])
+        self.assertTrue(report['pv_validation_failed'])
+        self.assertEqual(report['pv_validation_error_count'], 1)
+
+    def test_report_is_invalid_when_integrity_has_blocking_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'blocked.pv'
+            self.write_minimal_pv(path, 'passed', blocking_errors=2)
+            report = geometry_report(path)
+
+        self.assertFalse(report['valid'])
+        self.assertTrue(report['pv_validation_failed'])
+        self.assertEqual(report['pv_validation_blocking_errors'], 2)
+
+    def test_report_remains_valid_when_validation_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'valid.pv'
+            self.write_minimal_pv(path, 'passed')
+            report = geometry_report(path)
+
+        self.assertTrue(report['valid'])
+        self.assertFalse(report['pv_validation_failed'])
 
 
 class AtomicWriteTests(unittest.TestCase):
