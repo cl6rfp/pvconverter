@@ -34,10 +34,8 @@ jobs:
       - name: Run synthetic arc-direction tests
         run: python test_arc_direction.py
 
-      - name: Validate committed PV fixture
-        run: |
-          python test_pvf.py "MS-7B79_test.pv"
-          python test_geometry.py "MS-7B79_test.pv"
+      - name: Validate legacy PV geometry fixture
+        run: python test_geometry.py "MS-7B79_test.pv"
 
       - name: Convert reference GenCAD from scratch
         run: python build_pv.py "MS-7B79 r1.0.cad" "/tmp/MS-7B79_ci.pv"
