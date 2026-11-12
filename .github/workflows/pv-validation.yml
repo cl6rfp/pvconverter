@@ -1,0 +1,48 @@
+name: PV Converter validation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Compile Python modules
+        run: python -m compileall -q .
+
+      - name: Run parser and integrity unit tests
+        run: python -m unittest -v test_gencad_parser test_pv_validation
+
+      - name: Run synthetic arc-direction tests
+        run: python test_arc_direction.py
+
+      - name: Validate committed PV fixture
+        run: |
+          python test_pvf.py "MS-7B79_test.pv"
+          python test_geometry.py "MS-7B79_test.pv"
+
+      - name: Convert reference GenCAD from scratch
+        run: python build_pv.py "MS-7B79 r1.0.cad" "/tmp/MS-7B79_ci.pv"
+
+      - name: Validate freshly converted PV
+        run: |
+          python test_pvf.py "/tmp/MS-7B79_ci.pv"
+          python test_geometry.py "/tmp/MS-7B79_ci.pv"
