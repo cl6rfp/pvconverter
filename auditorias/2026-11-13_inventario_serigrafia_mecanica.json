@@ -1,0 +1,124 @@
+{
+  "source_file": "MS-7B79 r1.0.cad",
+  "silkscreen": {
+    "explicit_layer_names": [],
+    "status": "not explicitly identified",
+    "note": "Artwork on TOP/BOTTOM is not automatically classified as silkscreen."
+  },
+  "board_artwork": {
+    "groups": 204,
+    "by_layer": {
+      "BOTTOM": 61,
+      "TOP": 143
+    },
+    "primitive_types": {
+      "arc": 114,
+      "line": 1174
+    },
+    "artworks_section_records": 0
+  },
+  "mechanical": {
+    "holes": 7,
+    "holes_source": "$MECH",
+    "holes_data": [
+      {
+        "x": -451.57,
+        "y": 63.39,
+        "diameter": 169.0,
+        "raw": [
+          "HOLE",
+          "-451.570",
+          "63.390",
+          "169.000"
+        ]
+      },
+      {
+        "x": -693.7,
+        "y": 63.39,
+        "diameter": 120.0,
+        "raw": [
+          "HOLE",
+          "-693.700",
+          "63.390",
+          "120.000"
+        ]
+      },
+      {
+        "x": 893.7,
+        "y": -1033.86,
+        "diameter": 120.0,
+        "raw": [
+          "HOLE",
+          "893.700",
+          "-1033.860",
+          "120.000"
+        ]
+      },
+      {
+        "x": 2121.26,
+        "y": -188.97,
+        "diameter": 120.0,
+        "raw": [
+          "HOLE",
+          "2121.260",
+          "-188.970",
+          "120.000"
+        ]
+      },
+      {
+        "x": 4739.37,
+        "y": -42.12,
+        "diameter": 120.0,
+        "raw": [
+          "HOLE",
+          "4739.370",
+          "-42.120",
+          "120.000"
+        ]
+      },
+      {
+        "x": 624.41,
+        "y": -4259.05,
+        "diameter": 120.0,
+        "raw": [
+          "HOLE",
+          "624.410",
+          "-4259.050",
+          "120.000"
+        ]
+      },
+      {
+        "x": -16.53,
+        "y": -6072.44,
+        "diameter": 120.0,
+        "raw": [
+          "HOLE",
+          "-16.530",
+          "-6072.440",
+          "120.000"
+        ]
+      }
+    ],
+    "explicit_board_outline": "not identified"
+  },
+  "components": {
+    "total": 2693,
+    "by_layer": {
+      "BOTTOM": 243,
+      "TOP": 2450
+    },
+    "rotation_degrees": {
+      "0.0": 740,
+      "135.0": 1,
+      "180.0": 617,
+      "270.0": 691,
+      "315.0": 1,
+      "90.0": 643
+    },
+    "shape_transform_tokens": {
+      "0": 4900,
+      "FLIP": 243,
+      "MIRRORY": 243
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "interpretation": "Same-route, same-layer segment endpoint contacts only. Not proof of electrical continuity or open circuits.",
+  "tolerance_source_units": 0.0001,
+  "routes_checked": 1997,
+  "totals": {
+    "segments_checked": 94146,
+    "vias_not_joined": 7149,
+    "endpoint_joins": 86614,
+    "endpoint_groups": 7532,
+    "routes_with_multiple_endpoint_groups": 1263
+  },
+  "routes_needing_review": 1263,
+  "worst_routes": [
+    {
+      "route_id": 5,
+      "net_id": 5,
+      "segments_checked": 5265,
+      "endpoint_groups": 1604,
+      "vias_not_joined": 2315,
+      "skipped": {}
+    },
+    {
+      "route_id": 22,
+      "net_id": 22,
+      "segments_checked": 1416,
+      "endpoint_groups": 218,
+      "vias_not_joined": 224,
+      "skipped": {}
+    },
+    {
+      "route_id": 393,
+      "net_id": 393,
+      "segments_checked": 1662,
+      "endpoint_groups": 184,
+      "vias_not_joined": 108,
+      "skipped": {}
+    },
+    {
+      "route_id": 226,
+      "net_id": 226,
+      "segments_checked": 763,
+      "endpoint_groups": 135,
+      "vias_not_joined": 204,
+      "skipped": {}
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "segments_checked": 1324,
+      "endpoint_groups": 125,
+      "vias_not_joined": 90,
+      "skipped": {}
+    },
+    {
+      "route_id": 606,
+      "net_id": 606,
+      "segments_checked": 1687,
+      "endpoint_groups": 118,
+      "vias_not_joined": 120,
+      "skipped": {}
+    },
+    {
+      "route_id": 889,
+      "net_id": 889,
+      "segments_checked": 1793,
+      "endpoint_groups": 106,
+      "vias_not_joined": 204,
+      "skipped": {}
+    },
+    {
+      "route_id": 148,
+      "net_id": 148,
+      "segments_checked": 407,
+      "endpoint_groups": 97,
+      "vias_not_joined": 51,
+      "skipped": {}
+    },
+    {
+      "route_id": 7,
+      "net_id": 7,
+      "segments_checked": 1165,
+      "endpoint_groups": 89,
+      "vias_not_joined": 138,
+      "skipped": {}
+    },
+    {
+      "route_id": 569,
+      "net_id": 569,
+      "segments_checked": 782,
+      "endpoint_groups": 81,
+      "vias_not_joined": 75,
+      "skipped": {}
+    },
+    {
+      "route_id": 373,
+      "net_id": 373,
+      "segments_checked": 407,
+      "endpoint_groups": 47,
+      "vias_not_joined": 37,
+      "skipped": {}
+    },
+    {
+      "route_id": 153,
+      "net_id": 153,
+      "segments_checked": 299,
+      "endpoint_groups": 30,
+      "vias_not_joined": 22,
+      "skipped": {}
+    },
+    {
+      "route_id": 21,
+      "net_id": 21,
+      "segments_checked": 235,
+      "endpoint_groups": 29,
+      "vias_not_joined": 28,
+      "skipped": {}
+    },
+    {
+      "route_id": 133,
+      "net_id": 133,
+      "segments_checked": 248,
+      "endpoint_groups": 23,
+      "vias_not_joined": 27,
+      "skipped": {}
+    },
+    {
+      "route_id": 1128,
+      "net_id": 1128,
+      "segments_checked": 214,
+      "endpoint_groups": 23,
+      "vias_not_joined": 26,
+      "skipped": {}
+    },
+    {
+      "route_id": 35,
+      "net_id": 35,
+      "segments_checked": 214,
+      "endpoint_groups": 22,
+      "vias_not_joined": 32,
+      "skipped": {}
+    },
+    {
+      "route_id": 574,
+      "net_id": 574,
+      "segments_checked": 77,
+      "endpoint_groups": 22,
+      "vias_not_joined": 6,
+      "skipped": {}
+    },
+    {
+      "route_id": 247,
+      "net_id": 247,
+      "segments_checked": 296,
+      "endpoint_groups": 21,
+      "vias_not_joined": 65,
+      "skipped": {}
+    },
+    {
+      "route_id": 113,
+      "net_id": 113,
+      "segments_checked": 221,
+      "endpoint_groups": 20,
+      "vias_not_joined": 20,
+      "skipped": {}
+    },
+    {
+      "route_id": 337,
+      "net_id": 337,
+      "segments_checked": 181,
+      "endpoint_groups": 20,
+      "vias_not_joined": 23,
+      "skipped": {}
+    }
+  ],
+  "excluded": [
+    "via bridging between layers",
+    "pad/pin contact",
+    "interior crossings and T junctions",
+    "copper polygons",
+    "contacts between separate ROUT records"
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "interpretation": "geometric adjacency only; NOT verified electrical continuity",
+  "tolerance_source_units": 0.0001,
+  "routes_checked": 1997,
+  "routes_with_gaps_or_invalid_data": 1581,
+  "totals": {
+    "adjacent_contacts": 85421,
+    "adjacent_gaps": 13880
+  },
+  "worst_routes": [
+    {
+      "route_id": 5,
+      "net_id": 5,
+      "primitive_count": 7580,
+      "adjacent_gaps": 4243,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 22,
+      "net_id": 22,
+      "primitive_count": 1640,
+      "adjacent_gaps": 549,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 226,
+      "net_id": 226,
+      "primitive_count": 967,
+      "adjacent_gaps": 349,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 889,
+      "net_id": 889,
+      "primitive_count": 1997,
+      "adjacent_gaps": 316,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 393,
+      "net_id": 393,
+      "primitive_count": 1770,
+      "adjacent_gaps": 297,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 606,
+      "net_id": 606,
+      "primitive_count": 1807,
+      "adjacent_gaps": 268,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "primitive_count": 1414,
+      "adjacent_gaps": 262,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 7,
+      "net_id": 7,
+      "primitive_count": 1303,
+      "adjacent_gaps": 236,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 569,
+      "net_id": 569,
+      "primitive_count": 857,
+      "adjacent_gaps": 176,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 148,
+      "net_id": 148,
+      "primitive_count": 458,
+      "adjacent_gaps": 148,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 247,
+      "net_id": 247,
+      "primitive_count": 361,
+      "adjacent_gaps": 87,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 373,
+      "net_id": 373,
+      "primitive_count": 444,
+      "adjacent_gaps": 85,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 21,
+      "net_id": 21,
+      "primitive_count": 263,
+      "adjacent_gaps": 78,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 133,
+      "net_id": 133,
+      "primitive_count": 275,
+      "adjacent_gaps": 63,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 35,
+      "net_id": 35,
+      "primitive_count": 246,
+      "adjacent_gaps": 59,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 153,
+      "net_id": 153,
+      "primitive_count": 321,
+      "adjacent_gaps": 58,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 498,
+      "net_id": 498,
+      "primitive_count": 520,
+      "adjacent_gaps": 57,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 496,
+      "net_id": 496,
+      "primitive_count": 315,
+      "adjacent_gaps": 52,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 1128,
+      "net_id": 1128,
+      "primitive_count": 240,
+      "adjacent_gaps": 48,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    },
+    {
+      "route_id": 113,
+      "net_id": 113,
+      "primitive_count": 241,
+      "adjacent_gaps": 46,
+      "invalid_ranges": 0,
+      "invalid_coordinates": 0
+    }
+  ]
+}

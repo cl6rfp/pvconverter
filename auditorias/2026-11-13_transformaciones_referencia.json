@@ -1,0 +1,23 @@
+{
+  "components": 2693,
+  "pins_transformed": 11104,
+  "pins_without_pad_geometry": 0,
+  "transform_tokens": {
+    "0": 4900,
+    "FLIP": 243,
+    "MIRRORY": 243
+  },
+  "numeric_shape_metadata_not_interpreted": {
+    "0": 4900
+  },
+  "unrecognized_transform_tokens": {},
+  "invalid_count": 0,
+  "invalid_examples": [],
+  "pad_envelope_bounds": [
+    -1240.83,
+    -11703.5,
+    8247.01,
+    197.01
+  ],
+  "interpretation": "SVG display convention, not independently verified GenCAD mirror semantics"
+}

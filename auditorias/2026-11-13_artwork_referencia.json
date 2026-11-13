@@ -1,0 +1,3479 @@
+{
+  "groups": 204,
+  "closed_line_chains": 152,
+  "note": "Closed artwork is not sufficient evidence of a physical PCB boundary.",
+  "items": [
+    {
+      "id": 1,
+      "name": "artwork1",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        -774.7,
+        -17.61,
+        -612.7,
+        144.39
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 2,
+      "name": "artwork2",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        -761.7,
+        -4.609999999999999,
+        -625.7,
+        131.39
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 3,
+      "name": "artwork3",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        -774.7,
+        -17.61,
+        -612.7,
+        144.39
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 4,
+      "name": "artwork4",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        -761.7,
+        -4.609999999999999,
+        -625.7,
+        131.39
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 5,
+      "name": "artwork5",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        812.7,
+        -1114.86,
+        974.7,
+        -952.8599999999999
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 6,
+      "name": "artwork6",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        825.7,
+        -1101.86,
+        961.7,
+        -965.8599999999999
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 7,
+      "name": "artwork7",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        812.7,
+        -1114.86,
+        974.7,
+        -952.8599999999999
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 8,
+      "name": "artwork8",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        825.7,
+        -1101.86,
+        961.7,
+        -965.8599999999999
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 9,
+      "name": "artwork9",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2040.26,
+        -269.97000000000025,
+        2202.26,
+        -107.96999999999977
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 10,
+      "name": "artwork10",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2053.26,
+        -256.97,
+        2189.26,
+        -120.97
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 11,
+      "name": "artwork11",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2040.26,
+        -269.97000000000025,
+        2202.26,
+        -107.96999999999977
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 12,
+      "name": "artwork12",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2053.26,
+        -256.97,
+        2189.26,
+        -120.97
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 13,
+      "name": "artwork13",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4658.37,
+        -123.12,
+        4820.37,
+        38.88
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 14,
+      "name": "artwork14",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4671.37,
+        -110.12,
+        4807.37,
+        25.880000000000003
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 15,
+      "name": "artwork15",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4658.37,
+        -123.12,
+        4820.37,
+        38.88
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 16,
+      "name": "artwork16",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4671.37,
+        -110.12,
+        4807.37,
+        25.880000000000003
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 17,
+      "name": "artwork17",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        543.41,
+        -4340.05,
+        705.41,
+        -4178.05
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 18,
+      "name": "artwork18",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        556.41,
+        -4327.05,
+        692.41,
+        -4191.05
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 19,
+      "name": "artwork19",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        543.41,
+        -4340.05,
+        705.41,
+        -4178.05
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 20,
+      "name": "artwork20",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        556.41,
+        -4327.05,
+        692.41,
+        -4191.05
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 21,
+      "name": "artwork21",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        -97.53,
+        -6153.44,
+        64.47,
+        -5991.44
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 22,
+      "name": "artwork22",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        -84.53,
+        -6140.44,
+        51.47,
+        -6004.44
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 23,
+      "name": "artwork23",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        -97.53,
+        -6153.44,
+        64.47,
+        -5991.44
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 24,
+      "name": "artwork24",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        -84.53,
+        -6140.44,
+        51.47,
+        -6004.44
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 25,
+      "name": "artwork25",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        6689.5,
+        -9695.53,
+        6847.5,
+        -9537.53
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 26,
+      "name": "artwork26",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        6698.5,
+        -9686.53,
+        6838.5,
+        -9546.53
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 27,
+      "name": "artwork27",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        6689.5,
+        -9695.53,
+        6847.5,
+        -9537.53
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 28,
+      "name": "artwork28",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        6698.5,
+        -9686.53,
+        6838.5,
+        -9546.53
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 29,
+      "name": "artwork29",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        5862.73,
+        -8002.62,
+        6020.73,
+        -7844.62
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 30,
+      "name": "artwork30",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        5871.73,
+        -7993.62,
+        6011.73,
+        -7853.62
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 31,
+      "name": "artwork31",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        5862.73,
+        -8002.62,
+        6020.73,
+        -7844.62
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 32,
+      "name": "artwork32",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        5871.73,
+        -7993.62,
+        6011.73,
+        -7853.62
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 33,
+      "name": "artwork33",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2395.01,
+        -1480.35,
+        2789.01,
+        -1086.35
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 34,
+      "name": "artwork34",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2454.01,
+        -1421.35,
+        2730.01,
+        -1145.35
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 35,
+      "name": "artwork35",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2395.01,
+        -5023.65,
+        2789.01,
+        -4629.65
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 36,
+      "name": "artwork36",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2454.004521485559,
+        -4964.665478514441,
+        2732.3199500169226,
+        -4686.350049983078
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 37,
+      "name": "artwork37",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4520.99,
+        -5023.65,
+        4914.99,
+        -4629.65
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 38,
+      "name": "artwork38",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4579.99,
+        -4964.65,
+        4855.99,
+        -4688.65
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 39,
+      "name": "artwork39",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4520.99,
+        -1480.35,
+        4914.99,
+        -1086.35
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 40,
+      "name": "artwork40",
+      "layer": "TOP",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4577.609532071577,
+        -1423.7204679284227,
+        4855.996202759151,
+        -1145.3337972408485
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 41,
+      "name": "artwork41",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2395.01,
+        -1480.35,
+        2789.01,
+        -1086.35
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 42,
+      "name": "artwork42",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2454.01,
+        -1421.35,
+        2730.01,
+        -1145.35
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 43,
+      "name": "artwork43",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2395.01,
+        -5023.65,
+        2789.01,
+        -4629.65
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 44,
+      "name": "artwork44",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        2454.004521485559,
+        -4964.665478514441,
+        2732.3199500169226,
+        -4686.350049983078
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 45,
+      "name": "artwork45",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4520.99,
+        -5023.65,
+        4914.99,
+        -4629.65
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 46,
+      "name": "artwork46",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4579.99,
+        -4964.65,
+        4855.99,
+        -4688.65
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 47,
+      "name": "artwork47",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4520.99,
+        -1480.35,
+        4914.99,
+        -1086.35
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 48,
+      "name": "artwork48",
+      "layer": "BOTTOM",
+      "primitives": 2,
+      "types": {
+        "arc": 2
+      },
+      "bbox": [
+        4577.609532071577,
+        -1423.7204679284227,
+        4855.996202759151,
+        -1145.3337972408485
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 49,
+      "name": "artwork49",
+      "layer": "BOTTOM",
+      "primitives": 12,
+      "types": {
+        "arc": 5,
+        "line": 7
+      },
+      "bbox": [
+        -1272.38,
+        -11728.0,
+        -225.0,
+        -10260.0
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 50,
+      "name": "artwork50",
+      "layer": "BOTTOM",
+      "primitives": 12,
+      "types": {
+        "arc": 5,
+        "line": 7
+      },
+      "bbox": [
+        -1256.38,
+        -11712.0,
+        -260.0,
+        -10260.0
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 51,
+      "name": "artwork51",
+      "layer": "TOP",
+      "primitives": 11,
+      "types": {
+        "arc": 4,
+        "line": 7
+      },
+      "bbox": [
+        -1274.000000045465,
+        -11680.0,
+        -1140.0,
+        -10495.0
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 52,
+      "name": "artwork52",
+      "layer": "TOP",
+      "primitives": 10,
+      "types": {
+        "arc": 4,
+        "line": 6
+      },
+      "bbox": [
+        -1258.0,
+        -11640.0,
+        -1125.0,
+        -10495.0
+      ],
+      "closed_line_chain": false,
+      "board_edge_verified": false
+    },
+    {
+      "id": 53,
+      "name": "artwork53",
+      "layer": "TOP",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        3990.0,
+        -5635.0,
+        4030.0,
+        -5590.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 54,
+      "name": "artwork54",
+      "layer": "TOP",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        3630.0,
+        -5870.0,
+        3670.0,
+        -5825.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 55,
+      "name": "artwork55",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        996.0,
+        -4430.0,
+        1020.0,
+        -4405.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 56,
+      "name": "artwork56",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        -471.08,
+        -3244.82,
+        -338.0,
+        -3124.82
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 57,
+      "name": "artwork57",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -998.0,
+        -2318.0,
+        -858.0,
+        -2209.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 58,
+      "name": "artwork58",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -903.0,
+        -1326.0,
+        -763.0,
+        -1258.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 59,
+      "name": "artwork59",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -894.0,
+        -1515.0,
+        -754.0,
+        -1447.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 60,
+      "name": "artwork60",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -1039.0,
+        -1216.0,
+        -994.0,
+        -1145.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 61,
+      "name": "artwork61",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -897.0,
+        -1183.0,
+        -757.0,
+        -1115.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 62,
+      "name": "artwork62",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -460.0,
+        -2880.0,
+        -338.0,
+        -2740.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 63,
+      "name": "artwork63",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -475.0,
+        -2744.0,
+        -225.0,
+        -2604.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 64,
+      "name": "artwork64",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -459.0,
+        -2608.0,
+        -337.0,
+        -2468.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 65,
+      "name": "artwork65",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -461.15,
+        -2425.3,
+        -339.15,
+        -2285.3
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 66,
+      "name": "artwork66",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -455.0,
+        -2249.0,
+        -333.0,
+        -2109.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 67,
+      "name": "artwork67",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -626.0,
+        -884.0,
+        -406.0,
+        -744.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 68,
+      "name": "artwork68",
+      "layer": "TOP",
+      "primitives": 11,
+      "types": {
+        "line": 11
+      },
+      "bbox": [
+        -393.43,
+        -574.63,
+        -228.0,
+        -324.63
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 69,
+      "name": "artwork69",
+      "layer": "TOP",
+      "primitives": 22,
+      "types": {
+        "line": 22
+      },
+      "bbox": [
+        275.0,
+        -660.0,
+        490.0,
+        -380.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 70,
+      "name": "artwork70",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        550.5,
+        -2019.0,
+        701.5,
+        -1743.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 71,
+      "name": "artwork71",
+      "layer": "TOP",
+      "primitives": 16,
+      "types": {
+        "line": 16
+      },
+      "bbox": [
+        570.0,
+        -1995.0,
+        655.0,
+        -1800.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 72,
+      "name": "artwork72",
+      "layer": "TOP",
+      "primitives": 16,
+      "types": {
+        "line": 16
+      },
+      "bbox": [
+        787.5,
+        -2712.5,
+        872.5,
+        -2517.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 73,
+      "name": "artwork73",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        633.5,
+        -1766.75,
+        672.5,
+        -1691.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 74,
+      "name": "artwork74",
+      "layer": "TOP",
+      "primitives": 10,
+      "types": {
+        "line": 10
+      },
+      "bbox": [
+        1020.0,
+        -3132.5,
+        1090.0,
+        -3007.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 75,
+      "name": "artwork75",
+      "layer": "TOP",
+      "primitives": 16,
+      "types": {
+        "line": 16
+      },
+      "bbox": [
+        1307.0,
+        -1065.0,
+        2038.03,
+        -425.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 76,
+      "name": "artwork76",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        1570.5,
+        -1236.5,
+        1721.5,
+        -1111.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 77,
+      "name": "artwork77",
+      "layer": "TOP",
+      "primitives": 10,
+      "types": {
+        "line": 10
+      },
+      "bbox": [
+        1474.0,
+        -320.44,
+        1600.48,
+        -250.81
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 78,
+      "name": "artwork78",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        1761.5,
+        -1313.0,
+        1912.5,
+        -1188.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 79,
+      "name": "artwork79",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        1705.0,
+        -325.0,
+        1985.0,
+        -150.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 80,
+      "name": "artwork80",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        1890.0,
+        -1625.0,
+        1980.0,
+        -1520.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 81,
+      "name": "artwork81",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        2004.25,
+        -583.5,
+        2079.75,
+        -544.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 82,
+      "name": "artwork82",
+      "layer": "TOP",
+      "primitives": 6,
+      "types": {
+        "line": 6
+      },
+      "bbox": [
+        2559.5,
+        -3035.0,
+        2644.5,
+        -2997.63
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 83,
+      "name": "artwork83",
+      "layer": "BOTTOM",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        3103.0,
+        -345.0,
+        3268.0,
+        -185.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 84,
+      "name": "artwork84",
+      "layer": "TOP",
+      "primitives": 6,
+      "types": {
+        "line": 6
+      },
+      "bbox": [
+        7009.5,
+        -93.68,
+        7094.5,
+        -56.31
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 85,
+      "name": "artwork85",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        4052.0,
+        302.0,
+        4328.0,
+        453.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 86,
+      "name": "artwork86",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        3745.0,
+        -170.0,
+        3875.0,
+        -30.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 87,
+      "name": "artwork87",
+      "layer": "BOTTOM",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        4295.0,
+        -275.0,
+        4560.0,
+        -95.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 88,
+      "name": "artwork88",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        4931.25,
+        -564.5,
+        5006.75,
+        -525.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 89,
+      "name": "artwork89",
+      "layer": "TOP",
+      "primitives": 6,
+      "types": {
+        "line": 6
+      },
+      "bbox": [
+        4931.31,
+        -605.5,
+        4968.68,
+        -520.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 90,
+      "name": "artwork90",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        5483.25,
+        -375.5,
+        5558.75,
+        -336.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 91,
+      "name": "artwork91",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        6226.25,
+        -159.5,
+        6301.75,
+        -120.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 92,
+      "name": "artwork92",
+      "layer": "TOP",
+      "primitives": 6,
+      "types": {
+        "line": 6
+      },
+      "bbox": [
+        6279.5,
+        -99.68,
+        6364.5,
+        -62.31
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 93,
+      "name": "artwork93",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        6583.25,
+        -164.5,
+        6658.75,
+        -125.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 94,
+      "name": "artwork94",
+      "layer": "TOP",
+      "primitives": 6,
+      "types": {
+        "line": 6
+      },
+      "bbox": [
+        6640.5,
+        -88.68,
+        6725.5,
+        -51.31
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 95,
+      "name": "artwork95",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        6896.25,
+        -165.5,
+        6971.75,
+        -126.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 96,
+      "name": "artwork96",
+      "layer": "TOP",
+      "primitives": 6,
+      "types": {
+        "line": 6
+      },
+      "bbox": [
+        6680.0,
+        -10345.0,
+        7085.0,
+        -10055.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 97,
+      "name": "artwork97",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        5299.25,
+        -8965.5,
+        5374.75,
+        -8926.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 98,
+      "name": "artwork98",
+      "layer": "TOP",
+      "primitives": 10,
+      "types": {
+        "line": 10
+      },
+      "bbox": [
+        2129.75,
+        -10270.0,
+        2476.0,
+        -10200.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 99,
+      "name": "artwork99",
+      "layer": "TOP",
+      "primitives": 10,
+      "types": {
+        "line": 10
+      },
+      "bbox": [
+        4862.16,
+        -11283.56,
+        4992.16,
+        -11096.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 100,
+      "name": "artwork100",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        2310.5,
+        -10747.75,
+        2349.5,
+        -10672.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 101,
+      "name": "artwork101",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        4166.0,
+        -10281.0,
+        4222.0,
+        -10239.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 102,
+      "name": "artwork102",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        4530.75,
+        -10559.0,
+        4623.25,
+        -10469.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 103,
+      "name": "artwork103",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        4800.0,
+        -10335.0,
+        4890.0,
+        -9760.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 104,
+      "name": "artwork104",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        5660.0,
+        -8682.5,
+        5745.0,
+        -8630.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 105,
+      "name": "artwork105",
+      "layer": "TOP",
+      "primitives": 10,
+      "types": {
+        "line": 10
+      },
+      "bbox": [
+        5752.16,
+        -11313.56,
+        5882.16,
+        -11126.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 106,
+      "name": "artwork106",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        5934.0,
+        -8986.0,
+        5936.0,
+        -8984.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 107,
+      "name": "artwork107",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        5850.0,
+        -8984.0,
+        5852.0,
+        -8982.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 108,
+      "name": "artwork108",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        5889.0,
+        -8942.0,
+        5891.0,
+        -8940.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 109,
+      "name": "artwork109",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6105.0,
+        -8267.0,
+        6107.0,
+        -8265.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 110,
+      "name": "artwork110",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6136.0,
+        -8265.0,
+        6138.0,
+        -8263.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 111,
+      "name": "artwork111",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        6275.0,
+        -11340.5,
+        6405.0,
+        -11195.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 112,
+      "name": "artwork112",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6088.0,
+        -7632.5,
+        6092.0,
+        -7627.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 113,
+      "name": "artwork113",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6021.0,
+        -7603.5,
+        6025.0,
+        -7598.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 114,
+      "name": "artwork114",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6191.0,
+        -8297.0,
+        6193.0,
+        -8295.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 115,
+      "name": "artwork115",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        6550.0,
+        -11325.0,
+        6680.0,
+        -11180.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 116,
+      "name": "artwork116",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        6410.0,
+        -11350.0,
+        6540.0,
+        -11205.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 117,
+      "name": "artwork117",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6585.0,
+        -11030.0,
+        6725.0,
+        -10970.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 118,
+      "name": "artwork118",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6585.0,
+        -10905.0,
+        6725.0,
+        -10830.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 119,
+      "name": "artwork119",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        6967.25,
+        -7793.5,
+        7042.75,
+        -7754.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 120,
+      "name": "artwork120",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7677.5,
+        -7867.5,
+        7802.5,
+        -7772.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 121,
+      "name": "artwork121",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        7628.0,
+        -7446.0,
+        7800.0,
+        -7351.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 122,
+      "name": "artwork122",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7677.5,
+        -7657.5,
+        7802.5,
+        -7562.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 123,
+      "name": "artwork123",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        520.0,
+        -4069.85,
+        554.0,
+        -4030.16
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 124,
+      "name": "artwork124",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        4086.0,
+        -5265.0,
+        4266.0,
+        -5127.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 125,
+      "name": "artwork125",
+      "layer": "TOP",
+      "primitives": 14,
+      "types": {
+        "line": 14
+      },
+      "bbox": [
+        3660.0,
+        -5840.0,
+        3945.0,
+        -5635.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 126,
+      "name": "artwork126",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        4112.0,
+        -6187.0,
+        4155.0,
+        -6142.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 127,
+      "name": "artwork127",
+      "layer": "TOP",
+      "primitives": 16,
+      "types": {
+        "line": 16
+      },
+      "bbox": [
+        4202.0,
+        -6155.0,
+        4385.0,
+        -6045.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 128,
+      "name": "artwork128",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        4853.0,
+        -6205.0,
+        4977.0,
+        -5581.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 129,
+      "name": "artwork129",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        6545.0,
+        -7395.0,
+        6810.0,
+        -7145.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 130,
+      "name": "artwork130",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        7700.0,
+        -2345.0,
+        7882.5,
+        -2165.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 131,
+      "name": "artwork131",
+      "layer": "TOP",
+      "primitives": 15,
+      "types": {
+        "line": 15
+      },
+      "bbox": [
+        7593.0,
+        -2658.0,
+        7883.0,
+        -2412.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 132,
+      "name": "artwork132",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7747.5,
+        -1758.0,
+        7812.5,
+        -1718.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 133,
+      "name": "artwork133",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7770.0,
+        -750.0,
+        7855.0,
+        -675.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 134,
+      "name": "artwork134",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7765.0,
+        -920.0,
+        7895.0,
+        -830.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 135,
+      "name": "artwork135",
+      "layer": "TOP",
+      "primitives": 16,
+      "types": {
+        "line": 16
+      },
+      "bbox": [
+        782.5,
+        -3392.5,
+        867.5,
+        -3197.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 136,
+      "name": "artwork136",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        4380.0,
+        -5605.0,
+        4470.0,
+        -5490.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 137,
+      "name": "artwork137",
+      "layer": "TOP",
+      "primitives": 7,
+      "types": {
+        "line": 7
+      },
+      "bbox": [
+        5710.0,
+        -6020.0,
+        5810.0,
+        -5975.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 138,
+      "name": "artwork138",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        6519.0,
+        -6223.0,
+        6754.0,
+        -6027.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 139,
+      "name": "artwork139",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        6898.5,
+        -6138.0,
+        6991.5,
+        -6082.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 140,
+      "name": "artwork140",
+      "layer": "TOP",
+      "primitives": 9,
+      "types": {
+        "line": 9
+      },
+      "bbox": [
+        7300.5,
+        -5155.0,
+        7415.0,
+        -4977.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 141,
+      "name": "artwork141",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7381.0,
+        -5067.0,
+        7423.0,
+        -5023.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 142,
+      "name": "artwork142",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        7364.5,
+        -3436.75,
+        7403.5,
+        -3361.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 143,
+      "name": "artwork143",
+      "layer": "TOP",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        7394.0,
+        -3369.0,
+        7528.5,
+        -3299.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 144,
+      "name": "artwork144",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7353.5,
+        -1621.0,
+        7418.5,
+        -1581.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 145,
+      "name": "artwork145",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7455.0,
+        -1655.0,
+        7505.0,
+        -1599.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 146,
+      "name": "artwork146",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7630.0,
+        -7000.0,
+        7730.0,
+        -6915.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 147,
+      "name": "artwork147",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        7664.0,
+        -1625.5,
+        7704.0,
+        -1560.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 148,
+      "name": "artwork148",
+      "layer": "TOP",
+      "primitives": 6,
+      "types": {
+        "line": 6
+      },
+      "bbox": [
+        7704.0,
+        -279.5,
+        7809.0,
+        -223.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 149,
+      "name": "artwork149",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        7975.5,
+        -987.75,
+        8014.5,
+        -912.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 150,
+      "name": "artwork150",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6195.0,
+        -10330.0,
+        6600.0,
+        -9765.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 151,
+      "name": "artwork151",
+      "layer": "BOTTOM",
+      "primitives": 10,
+      "types": {
+        "line": 10
+      },
+      "bbox": [
+        625.0,
+        -6140.0,
+        720.0,
+        -5965.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 152,
+      "name": "artwork152",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        750.0,
+        -5695.0,
+        805.0,
+        -5640.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 153,
+      "name": "artwork153",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        4440.0,
+        -7775.0,
+        4475.0,
+        -7680.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 154,
+      "name": "artwork154",
+      "layer": "BOTTOM",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        -1063.75,
+        -4502.37,
+        -943.75,
+        -4272.37
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 155,
+      "name": "artwork155",
+      "layer": "TOP",
+      "primitives": 13,
+      "types": {
+        "line": 13
+      },
+      "bbox": [
+        -976.25,
+        -4574.87,
+        -871.25,
+        -4257.37
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 156,
+      "name": "artwork156",
+      "layer": "TOP",
+      "primitives": 13,
+      "types": {
+        "line": 13
+      },
+      "bbox": [
+        -657.5,
+        -4606.0,
+        -528.75,
+        -4492.37
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 157,
+      "name": "artwork157",
+      "layer": "TOP",
+      "primitives": 16,
+      "types": {
+        "line": 16
+      },
+      "bbox": [
+        -673.75,
+        -4312.5,
+        -508.82,
+        -4212.37
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 158,
+      "name": "artwork158",
+      "layer": "TOP",
+      "primitives": 7,
+      "types": {
+        "line": 7
+      },
+      "bbox": [
+        -637.0,
+        -4417.87,
+        -522.0,
+        -4332.87
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 159,
+      "name": "artwork159",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -275.61,
+        -3614.44,
+        -48.61,
+        -3493.44
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 160,
+      "name": "artwork160",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        -251.78,
+        -3748.98,
+        -24.78,
+        -3627.98
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 161,
+      "name": "artwork161",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        -278.08,
+        -3380.82,
+        -145.0,
+        -3260.82
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 162,
+      "name": "artwork162",
+      "layer": "TOP",
+      "primitives": 26,
+      "types": {
+        "line": 26
+      },
+      "bbox": [
+        -105.0,
+        -4980.0,
+        477.5,
+        -4312.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 163,
+      "name": "artwork163",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        -220.0,
+        -4047.0,
+        -100.0,
+        -3897.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 164,
+      "name": "artwork164",
+      "layer": "BOTTOM",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        825.0,
+        -6855.0,
+        1010.0,
+        -6775.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 165,
+      "name": "artwork165",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        805.0,
+        -5760.0,
+        860.0,
+        -5705.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 166,
+      "name": "artwork166",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        1200.0,
+        -4584.85,
+        1234.0,
+        -4545.16
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 167,
+      "name": "artwork167",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        1166.0,
+        -4492.85,
+        1200.0,
+        -4453.16
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 168,
+      "name": "artwork168",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        1263.0,
+        -4406.0,
+        1297.0,
+        -4366.31
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 169,
+      "name": "artwork169",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        2013.0,
+        -3879.85,
+        2047.0,
+        -3840.16
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 170,
+      "name": "artwork170",
+      "layer": "TOP",
+      "primitives": 6,
+      "types": {
+        "line": 6
+      },
+      "bbox": [
+        3201.5,
+        -4473.69,
+        3286.5,
+        -4436.32
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 171,
+      "name": "artwork171",
+      "layer": "TOP",
+      "primitives": 13,
+      "types": {
+        "line": 13
+      },
+      "bbox": [
+        -654.5,
+        -7120.0,
+        -267.5,
+        -6730.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 172,
+      "name": "artwork172",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        1607.25,
+        -9861.5,
+        1682.75,
+        -9822.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 173,
+      "name": "artwork173",
+      "layer": "TOP",
+      "primitives": 14,
+      "types": {
+        "line": 14
+      },
+      "bbox": [
+        1520.0,
+        -10105.0,
+        1718.5,
+        -10035.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 174,
+      "name": "artwork174",
+      "layer": "TOP",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        1682.0,
+        -10272.0,
+        1735.0,
+        -10202.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 175,
+      "name": "artwork175",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        1622.5,
+        -9616.0,
+        1698.0,
+        -9577.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 176,
+      "name": "artwork176",
+      "layer": "TOP",
+      "primitives": 8,
+      "types": {
+        "line": 8
+      },
+      "bbox": [
+        4460.0,
+        -9002.5,
+        4550.0,
+        -8957.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 177,
+      "name": "artwork177",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        694.25,
+        -11257.5,
+        769.75,
+        -11218.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 178,
+      "name": "artwork178",
+      "layer": "TOP",
+      "primitives": 10,
+      "types": {
+        "line": 10
+      },
+      "bbox": [
+        5787.5,
+        -5442.5,
+        6899.0,
+        -5391.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 179,
+      "name": "artwork179",
+      "layer": "TOP",
+      "primitives": 9,
+      "types": {
+        "line": 9
+      },
+      "bbox": [
+        7165.0,
+        -1870.0,
+        7285.0,
+        -1822.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 180,
+      "name": "artwork180",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        5438.3,
+        -2398.5,
+        5444.1,
+        -2393.2
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 181,
+      "name": "artwork181",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        -365.0,
+        -10650.0,
+        -265.0,
+        -10535.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 182,
+      "name": "artwork182",
+      "layer": "TOP",
+      "primitives": 15,
+      "types": {
+        "line": 15
+      },
+      "bbox": [
+        82.0,
+        -11183.0,
+        212.0,
+        -11004.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 183,
+      "name": "artwork183",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        261.25,
+        -11299.5,
+        336.75,
+        -11260.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 184,
+      "name": "artwork184",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        549.25,
+        -11258.5,
+        624.75,
+        -11219.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 185,
+      "name": "artwork185",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        -932.5,
+        -8445.0,
+        -792.5,
+        -8275.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 186,
+      "name": "artwork186",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -969.5,
+        -7962.75,
+        -930.5,
+        -7887.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 187,
+      "name": "artwork187",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -1001.5,
+        -8130.75,
+        -962.5,
+        -8055.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 188,
+      "name": "artwork188",
+      "layer": "TOP",
+      "primitives": 10,
+      "types": {
+        "line": 10
+      },
+      "bbox": [
+        -1010.0,
+        -8228.0,
+        -829.0,
+        -7932.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 189,
+      "name": "artwork189",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -734.5,
+        -7955.75,
+        -695.5,
+        -7880.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 190,
+      "name": "artwork190",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -817.5,
+        -7976.75,
+        -778.5,
+        -7901.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 191,
+      "name": "artwork191",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -602.5,
+        -7780.75,
+        -563.5,
+        -7705.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 192,
+      "name": "artwork192",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -561.5,
+        -8300.75,
+        -522.5,
+        -8225.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 193,
+      "name": "artwork193",
+      "layer": "TOP",
+      "primitives": 26,
+      "types": {
+        "line": 26
+      },
+      "bbox": [
+        5725.0,
+        -9387.0,
+        6913.11,
+        -8249.51
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 194,
+      "name": "artwork194",
+      "layer": "BOTTOM",
+      "primitives": 14,
+      "types": {
+        "line": 14
+      },
+      "bbox": [
+        5864.3,
+        -9308.18,
+        6859.58,
+        -8142.04
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 195,
+      "name": "artwork195",
+      "layer": "BOTTOM",
+      "primitives": 18,
+      "types": {
+        "line": 18
+      },
+      "bbox": [
+        5864.3,
+        -9308.18,
+        6930.0,
+        -8142.04
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 196,
+      "name": "artwork196",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        6980.0,
+        -7555.0,
+        7100.0,
+        -7405.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 197,
+      "name": "artwork197",
+      "layer": "BOTTOM",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        1855.0,
+        -7635.0,
+        3790.0,
+        -7395.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 198,
+      "name": "artwork198",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -868.5,
+        -11486.75,
+        -829.5,
+        -11411.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 199,
+      "name": "artwork199",
+      "layer": "TOP",
+      "primitives": 21,
+      "types": {
+        "line": 21
+      },
+      "bbox": [
+        -813.0,
+        -10756.0,
+        -58.0,
+        -9896.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 200,
+      "name": "artwork200",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -452.75,
+        -11233.5,
+        -377.25,
+        -11194.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 201,
+      "name": "artwork201",
+      "layer": "BOTTOM",
+      "primitives": 5,
+      "types": {
+        "line": 5
+      },
+      "bbox": [
+        -573.5,
+        -11281.75,
+        -534.5,
+        -11206.25
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 202,
+      "name": "artwork202",
+      "layer": "TOP",
+      "primitives": 4,
+      "types": {
+        "line": 4
+      },
+      "bbox": [
+        3865.75,
+        -4875.0,
+        3945.0,
+        -4794.5
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 203,
+      "name": "artwork203",
+      "layer": "TOP",
+      "primitives": 23,
+      "types": {
+        "line": 23
+      },
+      "bbox": [
+        2715.0,
+        -4135.0,
+        4720.0,
+        -1956.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    },
+    {
+      "id": 204,
+      "name": "artwork204",
+      "layer": "BOTTOM",
+      "primitives": 47,
+      "types": {
+        "line": 47
+      },
+      "bbox": [
+        2720.95,
+        -4149.49,
+        4678.63,
+        -2095.0
+      ],
+      "closed_line_chain": true,
+      "board_edge_verified": false
+    }
+  ]
+}

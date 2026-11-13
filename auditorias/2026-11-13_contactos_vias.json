@@ -1,0 +1,448 @@
+{
+  "scope": "Via-to-segment endpoint candidates within one ROUT; NETS-to-PINS reference checks.",
+  "tolerance_source_units": 0.0001,
+  "routes_checked": 1997,
+  "totals": {
+    "vias_checked": 7149,
+    "vias_without_endpoint_candidates": 2001,
+    "vias_with_endpoint_candidates": 5148,
+    "layer_endpoint_matches": 9074,
+    "vias_with_multiple_layer_candidates": 2704,
+    "nets_checked": 1997,
+    "net_pin_references": 10595
+  },
+  "examples": [
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 4,
+      "position": [
+        720.0,
+        -10140.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            51
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 5,
+      "position": [
+        200.0,
+        -9945.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            50
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            47
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 6,
+      "position": [
+        26.0,
+        -10032.85
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            45
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            49
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 7,
+      "position": [
+        200.0,
+        -10140.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            50
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            51
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 8,
+      "position": [
+        4500.0,
+        -8240.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            72
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 9,
+      "position": [
+        4540.0,
+        -8240.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            71,
+            72
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 10,
+      "position": [
+        7072.0,
+        -10575.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            106
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            100
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 11,
+      "position": [
+        5848.0,
+        -10125.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            102
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            97
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 12,
+      "position": [
+        4350.0,
+        -10677.15
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            73
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            74
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 13,
+      "position": [
+        4414.0,
+        -10677.15
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            75
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            74
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 14,
+      "position": [
+        7210.46,
+        -8860.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            121
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            187
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 15,
+      "position": [
+        7620.0,
+        -9700.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            168
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            181
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 16,
+      "position": [
+        2948.0,
+        -9403.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            81,
+            132
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            131,
+            133
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 17,
+      "position": [
+        5286.5,
+        -8310.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            120,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 18,
+      "position": [
+        5286.5,
+        -8276.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 19,
+      "position": [
+        3530.0,
+        -8700.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            143
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            92,
+            136
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 20,
+      "position": [
+        3339.0,
+        -9394.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            147
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            135
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 21,
+      "position": [
+        2948.0,
+        -9447.0
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 1,
+          "segment_ids": [
+            132
+          ]
+        },
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            129,
+            131
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 22,
+      "position": [
+        1437.0,
+        -9548.5
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            130
+          ]
+        }
+      ]
+    },
+    {
+      "route_id": 2,
+      "net_id": 2,
+      "via_id": 23,
+      "position": [
+        1483.5,
+        -9548.5
+      ],
+      "matching_layers": [
+        {
+          "layer_id": 4,
+          "segment_ids": [
+            123,
+            130
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "A matching endpoint is a geometric candidate, not verified electrical continuity.",
+    "Padstack layers identify listed pad layers; via spans and plated-through behavior are not inferred.",
+    "Interior T-junctions, crossings, traces in other ROUT records and copper regions are excluded.",
+    "Pin positions require confirmed board transforms; pin-to-trace geometry is not evaluated.",
+    "Existing NETS pin references are validated, not reconstructed from geometry."
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "source": "MS-7B79 r1.0.cad",
+  "sha256": "3a70ed0c97fefbed2e40c4075bcf7ab4c320afb83556c039db1158eac39a6c26",
+  "sections": {
+    "$HEADER": {
+      "records": 8,
+      "types": {
+        "ATTRIBUTE": 1,
+        "DRAWING": 1,
+        "GENCAD": 1,
+        "INTERTRACK": 1,
+        "ORIGIN": 1,
+        "REVISION": 1,
+        "UNITS": 1,
+        "USER": 1
+      },
+      "unsupported_examples": [],
+      "partial_examples": [
+        {
+          "line_in_section": 1,
+          "record": "GENCAD 1.4"
+        },
+        {
+          "line_in_section": 2,
+          "record": "USER \"RSI-TRANSLATOR CAMCAD Professional 3.9.6b - Licensed to Teradyne, Douglas Raymond\""
+        },
+        {
+          "line_in_section": 3,
+          "record": "DRAWING board"
+        },
+        {
+          "line_in_section": 4,
+          "record": "REVISION \"Thursday, March 1, 2018 at 3:41pm\""
+        },
+        {
+          "line_in_section": 7,
+          "record": "INTERTRACK 0"
+        },
+        {
+          "line_in_section": 8,
+          "record": "ATTRIBUTE HEADER_1 \"Number of Routing Layers\" \"4\""
+        }
+      ],
+      "malformed_examples": []
+    },
+    "$BOARD": {
+      "records": 1492,
+      "types": {
+        "ARC": 114,
+        "ARTWORK": 204,
+        "LINE": 1174
+      },
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$PADS": {
+      "records": 961,
+      "types": {
+        "ARC": 178,
+        "CIRCLE": 108,
+        "LINE": 178,
+        "PAD": 347,
+        "RECTANGLE": 150
+      },
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$PADSTACKS": {
+      "records": 1214,
+      "types": {
+        "ATTRIBUTE": 1,
+        "PAD": 985,
+        "PADSTACK": 228
+      },
+      "unsupported_examples": [],
+      "partial_examples": [
+        {
+          "line_in_section": 966,
+          "record": "ATTRIBUTE PADST_1 \"BLIND\" \"??\""
+        }
+      ],
+      "malformed_examples": []
+    },
+    "$ARTWORKS": {
+      "records": 0,
+      "types": {},
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$SHAPES": {
+      "records": 3942,
+      "types": {
+        "INSERT": 67,
+        "PIN": 3763,
+        "SHAPE": 112
+      },
+      "unsupported_examples": [],
+      "partial_examples": [
+        {
+          "line_in_section": 4,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 8,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 12,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 28,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 32,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 162,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 173,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 178,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 194,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 270,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 275,
+          "record": "INSERT SMD"
+        },
+        {
+          "line_in_section": 281,
+          "record": "INSERT SMD"
+        }
+      ],
+      "malformed_examples": []
+    },
+    "$COMPONENTS": {
+      "records": 16158,
+      "types": {
+        "COMPONENT": 2693,
+        "DEVICE": 2693,
+        "LAYER": 2693,
+        "PLACE": 2693,
+        "ROTATION": 2693,
+        "SHAPE": 2693
+      },
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$DEVICES": {
+      "records": 816,
+      "types": {
+        "DEVICE": 408,
+        "PART": 408
+      },
+      "unsupported_examples": [],
+      "partial_examples": [
+        {
+          "line_in_section": 2,
+          "record": "PART 30.9k1%/4"
+        },
+        {
+          "line_in_section": 4,
+          "record": "PART x_499r1%/4"
+        },
+        {
+          "line_in_section": 6,
+          "record": "PART x_3.3kr1%/4"
+        },
+        {
+          "line_in_section": 8,
+          "record": "PART c470u2.5so-hf"
+        },
+        {
+          "line_in_section": 10,
+          "record": "PART c100p50n0/4"
+        },
+        {
+          "line_in_section": 12,
+          "record": "PART 649r1%/4"
+        },
+        {
+          "line_in_section": 14,
+          "record": "PART 330r1%/4"
+        },
+        {
+          "line_in_section": 16,
+          "record": "PART 806r1%/4"
+        },
+        {
+          "line_in_section": 18,
+          "record": "PART 5.76kr1%/4"
+        },
+        {
+          "line_in_section": 20,
+          "record": "PART 475r1%/4"
+        },
+        {
+          "line_in_section": 22,
+          "record": "PART 36.5kr1%/4"
+        },
+        {
+          "line_in_section": 24,
+          "record": "PART 1.18kr1%/4"
+        }
+      ],
+      "malformed_examples": []
+    },
+    "$SIGNALS": {
+      "records": 12592,
+      "types": {
+        "NODE": 10595,
+        "SIGNAL": 1997
+      },
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$TRACKS": {
+      "records": 353,
+      "types": {
+        "TRACK": 353
+      },
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$LAYERS": {
+      "records": 4,
+      "types": {
+        "DEFINE": 4
+      },
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$ROUTES": {
+      "records": 111965,
+      "types": {
+        "ARC": 27437,
+        "LAYER": 4763,
+        "LINE": 66709,
+        "ROUTE": 1997,
+        "TRACK": 3910,
+        "VIA": 7149
+      },
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$MECH": {
+      "records": 7,
+      "types": {
+        "HOLE": 7
+      },
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$TESTPINS": {
+      "records": 0,
+      "types": {},
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    },
+    "$POWERPINS": {
+      "records": 0,
+      "types": {},
+      "unsupported_examples": [],
+      "partial_examples": [],
+      "malformed_examples": []
+    }
+  },
+  "unsupported_records": 0,
+  "partial_records": 482,
+  "malformed_records": 0,
+  "notes": [
+    "Los registros parciales se conservan en la fuente; no prueban una representación completa en PV.",
+    "Un conteo de instrucciones reconocidas no certifica orientación, dimensiones ni conectividad.",
+    "El contorno mecánico y la serigrafía no se deducen de grupos de arte arbitrarios."
+  ]
+}

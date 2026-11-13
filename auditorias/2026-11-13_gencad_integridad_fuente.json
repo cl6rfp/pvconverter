@@ -1,0 +1,24 @@
+{
+  "source": "MS-7B79 r1.0.cad",
+  "pv": "MS-7B79 r1.0.pv",
+  "checks": 768221,
+  "error_count": 0,
+  "errors": [],
+  "records": {
+    "COMP": 2693,
+    "SHAP": 112,
+    "PADS": 347,
+    "PSTK": 228,
+    "NETS": 1997,
+    "ROUT": 1997,
+    "SEGS": 94146,
+    "VIAS": 7149,
+    "PRIM": 101295,
+    "PINS": 11104,
+    "HOLE": 7,
+    "TRKS": 353,
+    "ARTW": 204,
+    "DEVS": 408
+  },
+  "scope": "source fields and route order; not independent geometric correctness"
+}
