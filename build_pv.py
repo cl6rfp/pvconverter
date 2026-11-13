@@ -709,8 +709,15 @@ def build_model(data, raw):
 def main():
     ap=argparse.ArgumentParser(description='Build a PVF prototype from GenCAD 1.4')
     ap.add_argument('input'); ap.add_argument('output')
+    ap.add_argument('--strict-source', action='store_true',
+                    help='Reject unknown or structurally incomplete GenCAD instructions')
     args=ap.parse_args()
     data,raw=parse_file(args.input)
+    if args.strict_source:
+        from cad_coverage_audit import summarize
+        coverage = summarize(data)
+        if coverage['unsupported_records'] or coverage['malformed_records']:
+            ap.error('Source contains unknown or incomplete instructions; run cad_coverage_audit.py')
     print('Source validation:')
     print(json.dumps(data['validation'],indent=2))
     blocks=build_model(data,raw)

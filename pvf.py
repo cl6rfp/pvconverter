@@ -10,6 +10,13 @@ COMP_NONE=0
 COMP_ZSTD=1
 FLAG_REQUIRED=1
 
+# Defensive defaults for files supplied by third parties. These limits do not
+# change the PVF 1.0 on-disk format or the writer output.
+MAX_FILE_SIZE = 512 * 1024 * 1024
+MAX_BLOCKS = 256
+MAX_BLOCK_SIZE = 128 * 1024 * 1024
+MAX_TOTAL_UNCOMPRESSED = 512 * 1024 * 1024
+
 class PVFError(Exception): pass
 
 def _zstd_compress(data: bytes, level: int=9) -> bytes:
@@ -30,9 +37,33 @@ def _zstd_decompress(data: bytes, expected: int) -> bytes:
     except ImportError:
         exe=shutil.which('zstd')
         if not exe: raise PVFError('Zstandard unavailable: install package zstandard or zstd CLI')
-        p=subprocess.run([exe,'-q','-d','-c'],input=data,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        if p.returncode: raise PVFError(p.stderr.decode(errors='replace'))
-        return p.stdout
+        # Do not use subprocess.run(capture_output=True) for untrusted input:
+        # its stdout can grow without bound. Feeding via a temporary file also
+        # avoids a full input/output pipe deadlock while consuming stdout.
+        with tempfile.TemporaryDirectory(prefix='pvf_zstd_') as directory:
+            source = Path(directory) / 'block.zst'
+            source.write_bytes(data)
+            process = subprocess.Popen([exe, '-q', '-d', '-c', str(source)],
+                                       stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+            chunks = []
+            total = 0
+            try:
+                while True:
+                    part = process.stdout.read(min(1024 * 1024, expected + 1 - total))
+                    if not part:
+                        break
+                    total += len(part)
+                    if total > expected:
+                        raise PVFError('Zstandard output exceeds declared block size')
+                    chunks.append(part)
+                if process.wait() != 0:
+                    raise PVFError('Zstandard CLI decompression failed')
+                return b''.join(chunks)
+            finally:
+                if process.poll() is None:
+                    process.kill()
+                    process.wait()
+                process.stdout.close()
 
 def write_pvf(path, blocks: list[dict], version=VERSION):
     """Write PVF container. Each payload is canonical UTF-8 JSON compressed with Zstandard."""
@@ -77,7 +108,16 @@ def write_pvf(path, blocks: list[dict], version=VERSION):
     return {'file_size':file_size,'block_count':len(prepared),'header_crc32':hcrc}
 
 def read_pvf(path, verify_source=True):
+    """Read PVF with defensive resource limits and verify block CRCs.
+
+    ``verify_source`` is a historical, reserved compatibility argument. It
+    does NOT verify the original CAD SHA-256; that comparison is performed by
+    geometry_report() when the embedded SRCE block is available.
+    """
     p=Path(path)
+    actual_size = p.stat().st_size
+    if actual_size > MAX_FILE_SIZE:
+        raise PVFError('PVF file exceeds configured size limit')
     with p.open('rb') as f:
         h=f.read(HEADER.size)
         if len(h)!=HEADER.size: raise PVFError('Truncated PVF header')
@@ -85,18 +125,25 @@ def read_pvf(path, verify_source=True):
         if magic!=MAGIC: raise PVFError('Invalid PVF magic')
         if major!=1: raise PVFError(f'Unsupported PVF major version {major}')
         if hsize!=HEADER.size or entrysize!=DIRENT.size: raise PVFError('Unsupported header/directory layout')
-        if filesize!=p.stat().st_size: raise PVFError('File size does not match header')
+        if filesize!=actual_size: raise PVFError('File size does not match header')
+        if nblocks > MAX_BLOCKS: raise PVFError('PVF block count exceeds configured limit')
         hzero=HEADER.pack(magic,major,minor,hsize,flags,filesize,diroff,nblocks,entrysize,0,res)
         if zlib.crc32(hzero)&0xffffffff != hcrc: raise PVFError('Header CRC mismatch')
         if diroff < HEADER.size or diroff + nblocks*entrysize > filesize:
             raise PVFError('Invalid directory offset/count')
         f.seek(diroff)
         entries=[]
+        total_uncompressed = 0
         for _ in range(nblocks):
             d=f.read(DIRENT.size)
             if len(d)!=DIRENT.size: raise PVFError('Truncated directory')
             bid,bflags,off,csize,usize,count,crc,compression,schema,reserved=DIRENT.unpack(d)
             if off+csize>filesize or off<diroff+nblocks*entrysize: raise PVFError('Invalid block offset/size')
+            if csize > MAX_BLOCK_SIZE or usize > MAX_BLOCK_SIZE:
+                raise PVFError('PVF block exceeds configured size limit')
+            total_uncompressed += usize
+            if total_uncompressed > MAX_TOTAL_UNCOMPRESSED:
+                raise PVFError('PVF total uncompressed size exceeds configured limit')
             try: block_name=bid.decode('ascii')
             except UnicodeDecodeError: raise PVFError('Non-ASCII block identifier')
             entries.append((block_name,bflags,off,csize,usize,count,crc,compression,schema))

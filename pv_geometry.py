@@ -5,14 +5,31 @@ ambiguous arc directions remain unchanged in the PV file. For display only,
 ambiguous arcs use the CCW candidate and are counted in the report.
 """
 from __future__ import annotations
-import argparse, base64, hashlib, html, json, math
+import argparse, base64, hashlib, html, json, math, re
 from pathlib import Path
 from pvf import read_pvf, PVFError
+from component_transform import component_point, transformed_pad_points
 
 LAYER_COLORS = {
-    'TOP': '#d84a38', 'INNER_1': '#3b82c4', 'INNER_2': '#2b9b75',
-    'BOTTOM': '#8b5cf6', 'ALL': '#888888'
+    'TOP': '#ff655b', 'INNER_1': '#48b4e8', 'INNER_2': '#48d0a2',
+    'BOTTOM': '#ae83ff', 'ALL': '#aebac8'
 }
+
+
+def _layer_names(blocks):
+    """Return the declared layer names in source stack order, without guessing a stack."""
+    declared = [str(item['name']) for item in blocks.get('LAYR', []) if item.get('name')]
+    referenced = [item.get('source_layer') for key in ('SEGS', 'ARTW', 'COMP')
+                  for item in blocks.get(key, [])]
+    return list(dict.fromkeys(name for name in declared + referenced if name))
+
+
+def _layer_group(name, elements, kind):
+    if not elements:
+        return ''
+    safe = html.escape(name, quote=True)
+    return f'<g data-layer="{safe}" data-kind="{kind}">\n' + '\n'.join(elements) + '\n</g>'
+
 
 
 
@@ -237,6 +254,8 @@ def geometry_report(pv_path):
       'components':len(b['COMP']),'shapes':len(b['SHAP']),'pins':len(b['PINS']),
       'nets':len(b['NETS']),'routes':len(routes),'segments':len(segs),'vias':len(vias),
       'route_primitives':len(prims),'artwork_groups':len(b['ARTW']),'mechanical_holes':len(b['HOLE']),
+      'declared_layers':_layer_names(b),
+      'route_segments_by_layer':{name:sum(seg.get('source_layer')==name for seg in segs) for name in _layer_names(b)},
       'arc_records':arcs,'arc_direction_not_explicit':direction_not_explicit,
       'semicircle_arcs_with_equal_sweep_candidates':semicircle_arcs,
       'source_sha256_matches':source_hash_ok,
@@ -324,16 +343,26 @@ def export_svg(pv_path, svg_path, layer='ALL', show_components=False):
     pads={x['id']:x for x in b.get('PADS',[])}
     pins_by_component={}
     for pin in b.get('PINS',[]): pins_by_component.setdefault(pin['component_id'],[]).append(pin)
-    # Include footprint pin locations in view bounds using source component coordinates.
-    for c in b.get('COMP',[]):
-        if c.get('x') is None or c.get('y') is None: continue
-        ang=math.radians(float(c.get('rotation_deg') or 0))
-        mirror=bool(c.get('shape_transform_tokens') and 'MIRRORY' in c.get('shape_transform_tokens'))
-        for pin in pins_by_component.get(c.get('id'),[]):
-            px=float(pin.get('x_local') or 0); py=float(pin.get('y_local') or 0)
-            if mirror: px=-px
-            rx=px*math.cos(ang)-py*math.sin(ang); ry=px*math.sin(ang)+py*math.cos(ang)
-            addp((c['x']+rx,c['y']+ry))
+    # Frame the full transformed pad envelopes, not just pin centers. This
+    # avoids clipping rotated / mirrored pads near the edge of the preview.
+    for c in b.get('COMP', []):
+        if c.get('x') is None or c.get('y') is None:
+            continue
+        for pin in pins_by_component.get(c.get('id'), []):
+            stack = stacks.get(pin.get('padstack_id'), {})
+            entries = stack.get('pads', [])
+            side = 'BOTTOM' if c.get('source_layer') == 'BOTTOM' else 'TOP'
+            entry = next((e for e in entries if e.get('normalized_layer') == side), None)
+            if entry is None:
+                entry = next((e for e in entries if e.get('normalized_layer') in
+                              ('TOP', 'BOTTOM', 'INNER_1', 'INNER_2')), None)
+            padrec = pads.get(entry.get('pad_id')) if entry else None
+            if padrec:
+                for point in transformed_pad_points(c, pin, entry, padrec):
+                    addp(point)
+            else:
+                addp(component_point(c, (pin.get('x_local') or 0,
+                                         pin.get('y_local') or 0)))
     xmin,ymin,xmax,ymax=_xy_bounds(points)
     width=xmax-xmin; height=ymax-ymin
     target_w,target_h=1800,1300
@@ -345,22 +374,43 @@ def export_svg(pv_path, svg_path, layer='ALL', show_components=False):
     # No board-edge primitive is present in this source. Do not invent an
     # outline from routed copper or component positions: that hull is not a
     # physical board boundary and can visually mislead repair work.
-    # Existing board artwork (kept distinct from an asserted board outline).
+    # Preserve actual source layers as independent SVG groups. This allows
+    # the browser preview to toggle them without editing the PV document.
+    artwork_by_layer={}
     for a in b.get('ARTW',[]):
-        if not allowed(a.get('source_layer')): continue
-        color=LAYER_COLORS.get(a.get('source_layer'),'#a0a0a0')
+        name=a.get('source_layer') or 'UNSPECIFIED'
+        if not allowed(name): continue
+        color=LAYER_COLORS.get(name,'#b6ccd9')
+        items=[]
         for g in a.get('geometry',[]):
-            item=_geom_svg(g,color,1.5)
-            if item: parts.append(item)
+            item=_geom_svg(g,color,2.4)
+            if item: items.append(item)
+        if items:
+            artwork_id=html.escape(str(a.get('id','')),quote=True)
+            artwork_name=html.escape(str(a.get('name','')),quote=True)
+            artwork_by_layer.setdefault(name,[]).append(
+                f'<g data-artwork="{artwork_id}" data-artwork-name="{artwork_name}">'
+                f'<title>{artwork_name} · {html.escape(name)}</title>'
+                + ''.join(items) + '</g>')
+    for name, items in artwork_by_layer.items():
+        parts.append(_layer_group(name,items,'artwork'))
     track_width={t['id']:float(t.get('width') or 1.0) for t in b.get('TRKS',[])}
+    routes_by_layer={}
     for seg in display_segs:
-        if not allowed(seg.get('source_layer')): continue
-        color=LAYER_COLORS.get(seg.get('source_layer'),'#b5b5b5')
-        w=max(0.5,min(track_width.get(seg.get('track_id'),1.0),50.0))
+        name=seg.get('source_layer') or 'UNSPECIFIED'
+        if not allowed(name): continue
+        color=LAYER_COLORS.get(name,'#b5c5d3')
+        w=max(0.6,min(track_width.get(seg.get('track_id'),1.0),50.0))
         if seg.get('type')=='line':
             x1,y1=seg['p1']; x2,y2=seg['p2']
-            parts.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="{w}"/>')
-        elif seg.get('type')=='arc': parts.append(f'<path d="{_arc_path(seg)}" stroke="{color}" stroke-width="{w}" fill="none"/>')
+            item=f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="{w}"/>'
+        elif seg.get('type')=='arc':
+            item=f'<path d="{_arc_path(seg)}" stroke="{color}" stroke-width="{w}" fill="none"/>'
+        else:
+            continue
+        routes_by_layer.setdefault(name,[]).append(item)
+    for name, items in routes_by_layer.items():
+        parts.append(_layer_group(name,items,'routes'))
     # Footprints: draw actual pad geometry through component -> shape pin -> padstack -> pad.
     # The bottom-side MIRRORY token is applied as an X reflection of local footprint coordinates;
     # the original token remains preserved in the PV and this display transform is explicitly visual.
@@ -377,7 +427,8 @@ def export_svg(pv_path, svg_path, layer='ALL', show_components=False):
         mirror=bool(c.get('shape_transform_tokens') and 'MIRRORY' in c.get('shape_transform_tokens'))
         shape_pins=pins_by_component.get(c.get('id'),[])
         if show_components:
-            parts.append(f'<g transform="translate({cx},{cy}) rotate({angle}) scale({-1 if mirror else 1},1)">')
+            safe_layer=html.escape(str(c.get('source_layer') or 'UNSPECIFIED'),quote=True)
+            parts.append(f'<g data-layer="{safe_layer}" data-kind="components" transform="translate({cx},{cy}) rotate({angle}) scale({-1 if mirror else 1},1)">')
             # Approximate body silhouette from the actual footprint pad extents.
             # It is intentionally dashed: GenCAD SHAPES contains pin placements,
             # not a manufacturer-accurate package body outline.
@@ -459,36 +510,168 @@ def export_svg(pv_path, svg_path, layer='ALL', show_components=False):
                     ar=math.radians(angle)
                     wx=cx + lx*math.cos(ar) - ly*math.sin(ar)
                     wy=cy + lx*math.sin(ar) + ly*math.cos(ar)
-                    label_parts.append(f'<g transform="translate({wx},{-wy})"><text fill="#f4f1e8" stroke="none" font-size="10">{html.escape(str(pin["number"]))}</text></g>')
+                    label_parts.append(f'<g data-layer="{safe_layer}" data-kind="labels" transform="translate({wx},{-wy})"><text fill="#f4f1e8" stroke="none" font-size="10">{html.escape(str(pin["number"]))}</text></g>')
                 parts.append('</g>')
             # Component reference uses the transformed component origin.
             ref=html.escape(str(c.get('reference','')))
-            label_parts.append(f'<g transform="translate({cx},{-cy-16})"><text fill="#f3f4f6" stroke="none" font-size="18" text-anchor="middle">{ref}</text></g>')
+            label_parts.append(f'<g data-layer="{safe_layer}" data-kind="labels" transform="translate({cx},{-cy-16})"><text fill="#f3f4f6" stroke="none" font-size="18" text-anchor="middle">{ref}</text></g>')
             parts.append('</g>')
-    # Vias and mechanical holes remain visible on every selected copper view.
+    # Vias are kept separate from layer-specific copper: the source padstack
+    # defines their physical span, not the route layer of an adjacent line.
+    parts.append('<g data-kind="vias">')
     for v in b.get('VIAS',[]):
         x,y=v.get('x'),v.get('y')
         if x is not None and y is not None:
             parts.append(f'<circle cx="{x}" cy="{y}" r="9" stroke="#f5d76e" stroke-width="2" fill="#10151d"/>')
+    parts.append('</g>')
+    parts.append('<g data-kind="holes">')
     for h in b.get('HOLE',[]):
         x,y,d=h['x'],h['y'],h['diameter']
         parts.append(f'<circle cx="{x}" cy="{y}" r="{d/2}" stroke="#e5e7eb" stroke-width="2" fill="none" stroke-dasharray="8 5"/>')
+    parts.append('</g>')
     parts.append('</g>')
     parts.extend(label_parts)
     parts.append('</svg>')
     Path(svg_path).write_text('\n'.join(parts),encoding='utf-8')
     return {'svg_path':str(svg_path),'bounds_source_units':[xmin,ymin,xmax,ymax],'layer':layer,
-            'components_shown':show_components,'footprints_rendered':sum(1 for c in b.get('COMP',[]) if c.get('shape_id') in shapes),
+            'components_shown':show_components,'declared_layers':_layer_names(b),'footprints_rendered':sum(1 for c in b.get('COMP',[]) if c.get('shape_id') in shapes),
             **arc_direction_report, 'outline_status':'not rendered; source contains no explicit mechanical board edge', 'component_silhouettes':'estimated from transformed pad extents; dashed to distinguish from true package outlines'}
+
+
+def export_browser_preview(svg_path, html_path, title='PV Converter — Vista de diagnóstico'):
+    """Create a standalone HTML preview with individual source-layer visibility.
+
+    The controls only affect presentation; neither SVG geometry nor PV data
+    is edited. This is a diagnostic preview, not the planned board viewer.
+    """
+    svg=Path(svg_path).read_text(encoding='utf-8')
+    layers=list(dict.fromkeys(html.unescape(x) for x in re.findall(r'data-layer="([^"]+)"',svg)))
+    controls='\n'.join(
+        '<label><input type="checkbox" class="layer" checked data-name="' + html.escape(name,quote=True) + '"> '
+        + html.escape(name) + '</label>' for name in layers)
+    layout="""<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__TITLE__</title><style>
+:root {color-scheme:dark} body{margin:0;background:#0d121a;color:#e2e8f0;font:14px system-ui,Arial,sans-serif}
+header{padding:12px 18px;border-bottom:1px solid #384457;background:#161f2c;display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+header strong{font-size:16px} label{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+main{height:calc(100vh - 84px);min-height:450px;overflow:hidden;position:relative}
+main>svg{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+main>svg.panning{cursor:grabbing}
+small{color:#aeb9c9} button{background:#2e4056;color:white;border:1px solid #536981;border-radius:5px;padding:6px 9px;cursor:pointer}
+</style></head><body>
+<header><strong>PV · Vista de diagnóstico</strong><span>Capas: __LAYERS__</span>
+<label><input type="checkbox" data-kind="artwork" checked> Arte</label>
+<label><input type="checkbox" data-kind="routes" checked> Pistas</label>
+<label><input type="checkbox" data-kind="components" checked> Componentes</label>
+<label><input type="checkbox" data-kind="labels" checked> Etiquetas</label>
+<label><input type="checkbox" data-kind="vias" checked> Vías</label>
+<label><input type="checkbox" data-kind="holes" checked> Taladros</label>
+<label>Arte individual <select id="artwork-select"><option value="">Todos</option>__ARTWORK_OPTIONS__</select></label>
+<button type="button" id="reset-view" title="Restablecer encuadre">Restablecer vista</button>
+<small id="zoom-level" aria-live="polite">100 %</small>
+<small>Rueda: zoom · Clic derecho mantenido: desplazar · Sin borde verificado</small></header>
+<main>__SVG__</main>
+<script>
+function sync(){
+  const layers=new Map([...document.querySelectorAll('input.layer')].map(x=>[x.dataset.name,x.checked]));
+  const kinds=new Map([...document.querySelectorAll('input[data-kind]')].map(x=>[x.dataset.kind,x.checked]));
+  const selected=document.getElementById('artwork-select').value;
+  document.querySelectorAll('svg [data-artwork]').forEach(g=>{
+    g.style.opacity=(!selected || g.dataset.artwork===selected)?'1':'0.08';
+  });
+  document.querySelectorAll('svg [data-kind]').forEach(g=>{
+    const l=g.getAttribute('data-layer'), k=g.getAttribute('data-kind');
+    g.style.display=((!l || layers.get(l)!==false) && kinds.get(k)!==false)?'':'none';
+  });
+}
+document.querySelectorAll('header input, header select').forEach(x=>x.addEventListener('change',sync));sync();
+
+// Navigation acts on the SVG viewport only; no source coordinates are edited.
+const board = document.querySelector('main > svg');
+const initialView = board.viewBox.baseVal;
+const home = {x:initialView.x, y:initialView.y, width:initialView.width, height:initialView.height};
+const limits = {min:0.002, max:40}; // relative to the original drawing extent
+const level = document.getElementById('zoom-level');
+let drag = null;
+function currentView() {
+  const v = board.viewBox.baseVal;
+  return {x:v.x, y:v.y, width:v.width, height:v.height};
+}
+function applyView(v) {
+  board.setAttribute('viewBox', [v.x,v.y,v.width,v.height].join(' '));
+  level.textContent = Math.round(100 * home.width / v.width) + ' %';
+}
+function svgPoint(clientX, clientY) {
+  const matrix = board.getScreenCTM();
+  if (!matrix) return null;
+  const p = board.createSVGPoint();
+  p.x = clientX; p.y = clientY;
+  return p.matrixTransform(matrix.inverse());
+}
+board.addEventListener('wheel', event => {
+  event.preventDefault();
+  const anchor = svgPoint(event.clientX, event.clientY);
+  if (!anchor) return;
+  const v = currentView();
+  const factor = Math.exp(Math.max(-120, Math.min(120, event.deltaY)) * 0.0015);
+  const nextW = Math.min(home.width * limits.max, Math.max(home.width * limits.min, v.width * factor));
+  const scale = nextW / v.width;
+  applyView({x: anchor.x - (anchor.x - v.x) * scale,
+             y: anchor.y - (anchor.y - v.y) * scale,
+             width: nextW, height: v.height * scale});
+}, {passive:false});
+board.addEventListener('contextmenu', event => event.preventDefault());
+board.addEventListener('pointerdown', event => {
+  if (event.button !== 2) return;
+  event.preventDefault();
+  drag = {id:event.pointerId, x:event.clientX, y:event.clientY};
+  board.setPointerCapture(event.pointerId);
+  board.classList.add('panning');
+});
+board.addEventListener('pointermove', event => {
+  if (!drag || event.pointerId !== drag.id) return;
+  const a = svgPoint(drag.x, drag.y);
+  const b = svgPoint(event.clientX, event.clientY);
+  if (!a || !b) return;
+  const v = currentView();
+  applyView({...v, x:v.x + a.x - b.x, y:v.y + a.y - b.y});
+  drag.x = event.clientX; drag.y = event.clientY;
+});
+function stopPan(event) {
+  if (!drag || event.pointerId !== drag.id) return;
+  drag = null;
+  board.classList.remove('panning');
+  if (board.hasPointerCapture(event.pointerId)) board.releasePointerCapture(event.pointerId);
+}
+board.addEventListener('pointerup', stopPan);
+board.addEventListener('pointercancel', stopPan);
+board.addEventListener('lostpointercapture', event => {
+  if (drag && event.pointerId === drag.id) { drag=null; board.classList.remove('panning'); }
+});
+document.getElementById('reset-view').addEventListener('click', () => applyView(home));
+</script></body></html>"""
+    artworks=re.findall(r'<g data-artwork="([^"]+)" data-artwork-name="([^"]*)"',svg)
+    options=''.join('<option value="'+identifier+'">'+name+' (#'+identifier+')</option>'
+                    for identifier,name in artworks)
+    Path(html_path).write_text(layout.replace('__TITLE__',html.escape(title))
+        .replace('__LAYERS__',controls).replace('__ARTWORK_OPTIONS__',options)
+        .replace('__SVG__',svg),encoding='utf-8')
+    return {'html_path':str(html_path),'layers':layers}
 
 
 def main():
     ap=argparse.ArgumentParser(description='PVF reader and geometry preview')
     ap.add_argument('pv'); ap.add_argument('--report',action='store_true')
-    ap.add_argument('--svg'); ap.add_argument('--layer',default='ALL',choices=['ALL','TOP','INNER_1','INNER_2','BOTTOM'])
+    ap.add_argument('--svg'); ap.add_argument('--html',help='Standalone browser preview; requires --svg')
+    ap.add_argument('--layer',default='ALL',help='Source layer or ALL')
     ap.add_argument('--components',action='store_true')
     a=ap.parse_args()
     if a.report or not a.svg: print(json.dumps(geometry_report(a.pv),indent=2))
-    if a.svg: print(json.dumps(export_svg(a.pv,a.svg,a.layer,a.components),indent=2))
+    if a.html and not a.svg: ap.error('--html requires --svg')
+    if a.svg:
+        result=export_svg(a.pv,a.svg,a.layer,a.components)
+        if a.html: result['browser_preview']=export_browser_preview(a.svg,a.html)
+        print(json.dumps(result,indent=2))
 
 if __name__=='__main__': main()
